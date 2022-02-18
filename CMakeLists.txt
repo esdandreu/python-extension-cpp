@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.22)
 project(myproject VERSION "0.0.1")
 
 # Build the project library
@@ -43,9 +43,9 @@ find_package(pybind11 CONFIG REQUIRED)
 # complicated for this simple example.
 set(PROJECT_PYTHON_API_NAME _python_api)
 
-# This function behaves very much like CMake’s builtin `add_library`
+message(STATUS "${CMAKE_BINARY_DIR}")
 
-# Both SHARED and MODULE fail for now
+# This function behaves very much like CMake’s builtin `add_library`
 pybind11_add_module(${PROJECT_PYTHON_API_NAME} 
     MODULE 
         src/python/api.cpp
@@ -61,7 +61,15 @@ target_compile_definitions(${PROJECT_PYTHON_API_NAME}
     VERSION_INFO=${PROJECT_VERSION}
 )
 
-install(
-    TARGETS ${PROJECT_PYTHON_API_NAME} 
+install(TARGETS ${PROJECT_PYTHON_API_NAME}
+    RUNTIME_DEPENDENCY_SET _python_api_dependencies
+    DESTINATION .
+)
+
+# Install our library dependencies in the same DESTINATION as the python API.
+# Note that it only supports collecting the runtime dependencies for Windows,
+# Linux and macOS platforms
+install (RUNTIME_DEPENDENCY_SET _python_api_dependencies
+    PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-" "python"
     DESTINATION .
 )

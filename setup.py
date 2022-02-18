@@ -40,7 +40,7 @@ setup(
     license="MIT",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
-    cmake_install_dir="myproject",
+    cmake_install_dir="src/myproject",
     cmake_with_sdist=True,
     cmake_args=[f"-DCMAKE_TOOLCHAIN_FILE:PATH={VCPKG_CMAKE_TOOLCHAIN}"],
     extras_require={"test": ["pytest"]},
