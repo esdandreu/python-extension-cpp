@@ -16,7 +16,7 @@ PYBIND11_MODULE(_python_api, m) {
     )pbdoc";
 
     m.def("add", &add, "Add two numbers together");
-    m.def("hello_fft", &hello_fft, "Tests a Fast Fourier Transform");
+    // m.def("hello_fft", &hello_fft, "Tests a Fast Fourier Transform");
 
 #ifdef VERSION_INFO
     m.attr("__version__") = MACRO_STRINGIFY(VERSION_INFO);

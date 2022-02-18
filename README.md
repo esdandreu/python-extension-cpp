@@ -55,3 +55,7 @@ python setup.py install
 ```
 python -c "import myproject; print(myproject.add(1, 2))"
 ```
+
+```
+python -c "import myproject; myproject.hello_fft()"
+```

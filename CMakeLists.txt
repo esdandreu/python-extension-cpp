@@ -17,7 +17,7 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME} 
-    PUBLIC
+    PRIVATE
         FFTW3::fftw3
 )
 
@@ -43,6 +43,9 @@ find_package(pybind11 CONFIG REQUIRED)
 # complicated for this simple example.
 set(PROJECT_PYTHON_API_NAME _python_api)
 
+# This function behaves very much like CMake’s builtin `add_library`
+
+# Both SHARED and MODULE fail for now
 pybind11_add_module(${PROJECT_PYTHON_API_NAME} 
     MODULE 
         src/python/api.cpp
