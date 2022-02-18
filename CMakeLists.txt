@@ -5,6 +5,8 @@ project(myproject VERSION "0.0.1")
 
 # It is important that the library is static in order to build its Python
 # wrapper
+find_package(FFTW3 CONFIG REQUIRED)
+
 add_library(${PROJECT_NAME} STATIC 
     src/${PROJECT_NAME}/myproject.cpp
 )
@@ -12,6 +14,11 @@ add_library(${PROJECT_NAME} STATIC
 target_include_directories(${PROJECT_NAME} 
     PUBLIC
         src/${PROJECT_NAME}
+)
+
+target_link_libraries(${PROJECT_NAME} 
+    PUBLIC
+        FFTW3::fftw3
 )
 
 # Build the Python API

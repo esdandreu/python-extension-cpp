@@ -1,0 +1,8 @@
+{
+    "name": "myproject",
+    "version-string": "0.0.1",
+    "dependencies": [
+        "pybind11",
+        "fftw3"
+    ]
+}
