@@ -70,6 +70,7 @@ install(TARGETS ${PROJECT_PYTHON_API_NAME}
 # Note that it only supports collecting the runtime dependencies for Windows,
 # Linux and macOS platforms
 install (RUNTIME_DEPENDENCY_SET _python_api_dependencies
-    PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-" "python"
+    PRE_INCLUDE_REGEXES "fftw3"
+    PRE_EXCLUDE_REGEXES ".*"
     DESTINATION .
 )

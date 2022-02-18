@@ -8,8 +8,8 @@ try:
     from skbuild import setup
 except ImportError:
     print(
-        "Please update pip, you need pip 10 or greater,\n"
-        " or you need to install the PEP 518 requirements in pyproject.toml yourself",
+        "Please update pip, you need pip 10 or greater,\n or you need to "
+        "install the PEP 518 requirements in pyproject.toml yourself",
         file=sys.stderr,
     )
     raise
@@ -32,6 +32,7 @@ if not VCPKG_CMAKE_TOOLCHAIN.is_file():
         'Could not find `vcpkg`. Make sure to add it to this repository'
         )
 
+# TODO read vcpkg.json and pass variables to cmake
 setup(
     name="myproject",
     version="0.0.1",
@@ -43,6 +44,6 @@ setup(
     cmake_install_dir="src/myproject",
     cmake_with_sdist=True,
     cmake_args=[f"-DCMAKE_TOOLCHAIN_FILE:PATH={VCPKG_CMAKE_TOOLCHAIN}"],
-    extras_require={"test": ["pytest"]},
+    extras_require={"test": ["pytest"]}, # ! Is it needed?
     python_requires=">=3.6",
 )
