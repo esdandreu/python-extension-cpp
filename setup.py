@@ -29,21 +29,24 @@ VCPKG_DIR = PROJECT_SOURCE_DIR / "vcpkg"
 VCPKG_CMAKE_TOOLCHAIN = VCPKG_DIR / "scripts" / "buildsystems" / "vcpkg.cmake"
 if not VCPKG_CMAKE_TOOLCHAIN.is_file():
     raise RuntimeError(
-        'Could not find `vcpkg`. Make sure to add it to this repository'
+        "Could not find `vcpkg`. Make sure to clone it to the root of this "
+        f"repository. {VCPKG_CMAKE_TOOLCHAIN} should exist."
         )
 
 # TODO read vcpkg.json and pass variables to cmake
 setup(
     name="myproject",
     version="0.0.1",
-    description="A minimal example package with pybind11 and vcpkg",
+    description="A minimal example C++ extension using pybind11 and vcpkg",
     author="Andreu Gimenez",
     license="MIT",
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     cmake_install_dir="src/myproject",
     cmake_with_sdist=True,
-    cmake_args=[f"-DCMAKE_TOOLCHAIN_FILE:PATH={VCPKG_CMAKE_TOOLCHAIN}"],
+    cmake_args=[
+        f"-DCMAKE_TOOLCHAIN_FILE:PATH={str(VCPKG_CMAKE_TOOLCHAIN.resolve())}"
+        ],
     extras_require={"test": ["pytest"]}, # ! Is it needed?
     python_requires=">=3.6",
 )
