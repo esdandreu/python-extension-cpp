@@ -1,3 +1,5 @@
+from gettext import find
+import json
 import sys
 
 from setuptools import find_packages
@@ -28,25 +30,39 @@ if SKBUILD_DIR.exists():
 VCPKG_DIR = PROJECT_SOURCE_DIR / "vcpkg"
 VCPKG_CMAKE_TOOLCHAIN = VCPKG_DIR / "scripts" / "buildsystems" / "vcpkg.cmake"
 if not VCPKG_CMAKE_TOOLCHAIN.is_file():
-    raise RuntimeError(
-        "Could not find `vcpkg`. Make sure to clone it to the root of this "
-        f"repository. {VCPKG_CMAKE_TOOLCHAIN} should exist."
-        )
+    from git import Git
+    print("Cloning `vcpkg`...")
+    vcpkg = Git(PROJECT_SOURCE_DIR).clone('https://github.com/microsoft/vcpkg')
 
-# TODO read vcpkg.json and pass variables to cmake
+# In order to avoid specifying package name and version in multiple files, we
+# will use `vcpkg.json` in the repository root as reference and extract the
+# apropiate variables from there.
+with open(PROJECT_SOURCE_DIR / "vcpkg.json") as f:
+    vcpkg_json = json.load(f)
+    # Required
+    PROJECT_NAME = vcpkg_json["name"]
+    PROJECT_VERSION_STRING = vcpkg_json["version-string"]
+
 setup(
-    name="myproject",
-    version="0.0.1",
-    description="A minimal example C++ extension using pybind11 and vcpkg",
+    # Python package information, can be edited
+    name=PROJECT_NAME,
+    version=PROJECT_VERSION_STRING,
+    description="A minimal C++ extension using pybind11 and vcpkg",
     author="Andreu Gimenez",
     license="MIT",
-    packages=find_packages(where="src"),
-    package_dir={"": "src"},
-    cmake_install_dir="src/myproject",
-    cmake_with_sdist=True,
+    # All Python code that is placed in `src/python` will be available to be
+    # imported as `import $PROJECT_NAME`
+    packages=[PROJECT_NAME],
+    package_dir={PROJECT_NAME: "src/python"},
+    cmake_install_dir=PROJECT_NAME,
+    # CMake must be used allways, otherwise C++ dependencies won't be installed
+    cmake_with_sdist=True, 
+    # Signal cmake to use `vcpkg`
     cmake_args=[
         f"-DCMAKE_TOOLCHAIN_FILE:PATH={str(VCPKG_CMAKE_TOOLCHAIN.resolve())}"
         ],
-    extras_require={"test": ["pytest"]}, # ! Is it needed?
+    # Extra setuptools keywords:
+    # https://setuptools.pypa.io/en/latest/userguide/keywords.html
     python_requires=">=3.6",
+    tests_require=["pytest"], # ! Is it needed?
 )

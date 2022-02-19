@@ -22,8 +22,7 @@ might still be useful for you but you should extend it with
 ```
 python -m venv venv
 ```
-
-On Windows
+Activate it on Windows
 ```
 .\venv\Scripts\activate
 ```
@@ -34,14 +33,25 @@ source ./venv/bin/activate
 
 ### Install this project
 ```
-pip install -e https://github.com/esdandreu/python-extension-cpp
+pip install git+https://github.com/esdandreu/python-extension-cpp
 ```
+It will take a while to build as it will build the C++ dependencies as well,
+but it will work. It is definitely not the most optimal way of installing a
+package as we are installing as well the `vcpkg` package manager and building
+from source dependencies that might as well be installed on the system. But
+this allows a fast development environment where adding or removing C++
+dependencies should be easy.
 
 ### Test that the C++ code is working
+Our simple project contains a `add` function that adds two numbers together.
 ```
 python -c "import myproject; print(myproject.add(1, 2))"
 ```
 
+It also makes use of the C++ library
+[`fftw3`](https://github.com/FFTW/fftw3.git) that is available through `vcpkg`
+in order to perform a Fast Fourier Transform over a generated signal, printing
+its results.
 ```
 python -c "import myproject; myproject.hello_fft()"
 ```
@@ -87,7 +97,7 @@ It is recommended to use a clean virtual environment
 Install the required Python build dependencies
 
 ```
-pip install setuptools wheel pybind11 cmake scikit-build
+pip install setuptools wheel pybind11 cmake scikit-build GitPython
 ```
 
 ```

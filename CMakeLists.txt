@@ -13,9 +13,16 @@ if (DEFINED CMAKE_TOOLCHAIN_FILE) # Print useful information
     message(STATUS "Using toolchain: ${CMAKE_TOOLCHAIN_FILE}")
 endif()
 
+# TODO read vcpkg.json
+
 project(myproject VERSION "0.0.1")
 
-# Build the project library
+
+# It is recommended to split this file into multiple files and use
+# `add_submodule` if it starts to grow too large.
+
+# ------------------------- Build the project library -------------------------
+# Recomended refactor into src/${PROJECT_NAME}/CMakeLists.txt
 
 # It is important that the library is static in order to build its Python
 # wrapper
@@ -35,7 +42,9 @@ target_link_libraries(${PROJECT_NAME}
         FFTW3::fftw3
 )
 
-# Build the Python API
+# ----------------------------- Build python api ------------------------------
+# Recomended refactor into src/python/CMakeLists.txt
+
 if(SKBUILD)
   # Scikit-Build does not add your site-packages to the search path
   # automatically, so we need to add it _or_ the pybind11 specific directory

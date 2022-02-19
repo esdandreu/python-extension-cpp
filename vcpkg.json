@@ -1,6 +1,7 @@
 {
     "name": "myproject",
     "version-string": "0.0.1",
+    "description": "A minimal example library using pybind11 and vcpkg",
     "dependencies": [
         "pybind11",
         "fftw3"
