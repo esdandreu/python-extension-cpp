@@ -1,4 +1,18 @@
+# Installing RUNTIME_DEPENDENCIES requires at least CMake version 3.21
 cmake_minimum_required(VERSION 3.22)
+
+# Set CMake to use `vcpkg` to install dependencies. I avoids the need of
+# passing it as an argument to `cmake`.
+# https://github.com/microsoft/vcpkg/blob/master/docs/users/integration.md#using-an-environment-variable-instead-of-a-command-line-option
+if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+    set(CMAKE_TOOLCHAIN_FILE 
+        "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING ""
+    )
+endif()
+if (DEFINED CMAKE_TOOLCHAIN_FILE) # Print useful information
+    message(STATUS "Using toolchain: ${CMAKE_TOOLCHAIN_FILE}")
+endif()
+
 project(myproject VERSION "0.0.1")
 
 # Build the project library
@@ -42,8 +56,6 @@ find_package(pybind11 CONFIG REQUIRED)
 # code. This could be avoided with some code generation but it would be too
 # complicated for this simple example.
 set(PROJECT_PYTHON_API_NAME _python_api)
-
-message(STATUS "${CMAKE_BINARY_DIR}")
 
 # This function behaves very much like CMake’s builtin `add_library`
 pybind11_add_module(${PROJECT_PYTHON_API_NAME} 
