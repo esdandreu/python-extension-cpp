@@ -52,6 +52,8 @@ setup(
     license="MIT",
     # All Python code that is placed in `src/python` will be available to be
     # imported as `import $PROJECT_NAME`
+    # ! if `src/python` or its `__init__.py` is refactored, the following 
+    # ! arguments should be modified accordingly
     packages=[PROJECT_NAME],
     package_dir={PROJECT_NAME: "src/python"},
     cmake_install_dir=PROJECT_NAME,
