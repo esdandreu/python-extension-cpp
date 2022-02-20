@@ -75,7 +75,7 @@ endif()
 find_package(pybind11 CONFIG REQUIRED)
 
 # Take into account that this name should be consistent with the contents of
-# the __init__.py file and when calling PYBIND11_MODULE() in the python API
+# the `__init__.py` file and when calling PYBIND11_MODULE() in the python API
 # code. This could be avoided with some code generation but it would be too
 # complicated for this simple example.
 set(PROJECT_PYTHON_API_NAME _python_api)
