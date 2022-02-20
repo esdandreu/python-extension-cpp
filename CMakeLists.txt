@@ -13,9 +13,23 @@ if (DEFINED CMAKE_TOOLCHAIN_FILE) # Print useful information
     message(STATUS "Using toolchain: ${CMAKE_TOOLCHAIN_FILE}")
 endif()
 
-# TODO read vcpkg.json
+# In order to avoid specifying package name and version in multiple files, we
+# will use `vcpkg.json` in the repository root as reference and extract the
+# apropiate variables from there.
+file(READ ${CMAKE_SOURCE_DIR}/vcpkg.json vcpkg_json)
+string(JSON PROJECT_NAME GET ${vcpkg_json} "name")
+string(JSON VERSION_STRING GET ${vcpkg_json} "version-string")
+# Additionally, we will extract the `vcpkg` dependencies from `vckpkg.json` so
+# we can install them in together with the python API.
+string(JSON VCPKG_DEPENDENCIES_LENGTH LENGTH ${vcpkg_json} "dependencies")
+math(EXPR _LIMIT "${VCPKG_DEPENDENCIES_LENGTH} - 1")
+foreach(_IDX RANGE 0 ${_LIMIT})
+    string(JSON VCPKG_DEPENDENCY GET ${vcpkg_json} "dependencies" ${_IDX})
+    list(APPEND VCPKG_DEPENDENCIES ${VCPKG_DEPENDENCY})
+endforeach()
+message(STATUS "VCPKG_DEPENDENCIES: ${VCPKG_DEPENDENCIES}")
 
-project(myproject VERSION "0.0.1")
+project(${PROJECT_NAME} VERSION ${VERSION_STRING})
 
 
 # It is recommended to split this file into multiple files and use
@@ -79,19 +93,16 @@ target_link_libraries(${PROJECT_PYTHON_API_NAME}
 
 target_compile_definitions(${PROJECT_PYTHON_API_NAME} 
     PRIVATE 
-    VERSION_INFO=${PROJECT_VERSION}
+        VERSION_INFO=${PROJECT_VERSION}
 )
 
-install(TARGETS ${PROJECT_PYTHON_API_NAME}
-    RUNTIME_DEPENDENCY_SET _python_api_dependencies
-    DESTINATION .
-)
-
-# Install our library dependencies in the same DESTINATION as the python API.
+# Install the `vcpkg` dependencies in the same DESTINATION as the python API.
 # Note that it only supports collecting the runtime dependencies for Windows,
-# Linux and macOS platforms
-install (RUNTIME_DEPENDENCY_SET _python_api_dependencies
-    PRE_INCLUDE_REGEXES "fftw3"
-    PRE_EXCLUDE_REGEXES ".*"
+# Linux and macOS platforms.
+install(TARGETS ${PROJECT_PYTHON_API_NAME}
+    RUNTIME_DEPENDENCIES 
+        PRE_INCLUDE_REGEXES ${VCPKG_DEPENDENCIES}
+        # PRE_INCLUDE_REGEXES "fftw3" "pybind11"
+        PRE_EXCLUDE_REGEXES ".*"
     DESTINATION .
 )
