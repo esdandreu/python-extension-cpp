@@ -63,7 +63,6 @@ setup(
     cmake_args=[
         f"-DCMAKE_TOOLCHAIN_FILE:PATH={str(VCPKG_CMAKE_TOOLCHAIN.resolve())}"
         ],
-    setuo_requires=["pybind11", "cmake"],
     # Extra setuptools keywords:
     # https://setuptools.pypa.io/en/latest/userguide/keywords.html
     python_requires=">=3.6",
