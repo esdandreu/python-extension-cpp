@@ -19,12 +19,17 @@ might still be useful for you but you should extend it with
 [cuibuildwheel](https://github.com/pypa/cibuildwheel).
 
 ## Requirements
-Similarly to [`vcpkg`](https://github.com/microsoft/vcpkg) with the addition of
+Check [vcpkg](https://github.com/microsoft/vcpkg) with the addition of
 `cmake`:
 - [git](https://git-scm.com/downloads)
 - Build tools (Visual Studio on Windows or `gcc` on Linux for example)
 - [cmake](https://cmake.org/download/)
 
+If running on a clean linux environment (like a container or Windows Subsystem
+for Linux) you will need to install some additional tools as it is stated in
+`vcpkg`.
+```
+sudo apt-get install curl zip unzip tar pkg-config
 ## Example usage
 
 ### Create a clean Python virtual environment
@@ -106,8 +111,9 @@ It is recommended to use a clean virtual environment
 Install the required Python build dependencies
 
 ```
-pip install setuptools wheel pybind11 cmake scikit-build GitPython
+pip install setuptools wheel scikit-build cmake ninja GitPython
 ```
+<!-- pip install setuptools wheel pybind11 cmake scikit-build GitPython -->
 
 ```
 python setup.py install

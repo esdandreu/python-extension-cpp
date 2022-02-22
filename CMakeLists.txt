@@ -9,7 +9,7 @@ if (NOT DEFINED CMAKE_TOOLCHAIN_FILE)
         set(CMAKE_TOOLCHAIN_FILE 
             "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING ""
         )
-    elseif(EXISTS "${CMAKE_SOURCE_DIR}/vcpkg/.vcpkg-root")
+    elseif(EXISTS "${CMAKE_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
         set(CMAKE_TOOLCHAIN_FILE 
             "${CMAKE_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake"
             CACHE STRING ""
@@ -22,6 +22,7 @@ endif()
 
 message(STATUS "CMAKE Python Libdir: ${CMAKE_INSTALL_PYTHON_LIBDIR}")
 message(STATUS "CMAKE Install prefix: ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "CMAKE Install libdir: ${CMAKE_INSTALL_LIBDIR}")
 message(STATUS "project binary dir: ${myproject_BINARY_DIR}")
 
 # In order to avoid specifying package name and version in multiple files, we
@@ -72,6 +73,8 @@ target_link_libraries(${PROJECT_NAME}
 # Option for building the project Python API, setup.py defines this variable
 option(BUILD_PYTHON_API "Build the python API" OFF)
 if(BUILD_PYTHON_API)
+    message(STATUS "Build Python API")
+
     if(SKBUILD)
         # Scikit-Build does not add your site-packages to the search path
         # automatically, so we need to add it _or_ the pybind11 specific
@@ -119,4 +122,23 @@ if(BUILD_PYTHON_API)
             PRE_EXCLUDE_REGEXES ".*"
         DESTINATION .
     )
+
+    # The extension module must load the hello library as a dependency when the
+    # extension module is loaded. The easiest way to locate the hello library
+    # is via RPATH. Absolute RPATHs are possible, but they make the resulting
+    # binaries not redistributable to other Python installations (conda is
+    # broke, wheel reuse is broke, and more!).
+    #
+    # Placing the python API in the package and using relative RPATHs that
+    # doesn't point outside of the package means that the built package is
+    # relocatable. This allows for safe binary redistribution.
+    if(APPLE)
+        set_target_properties(${PROJECT_PYTHON_API_NAME} PROPERTIES 
+            INSTALL_RPATH "@loader_path/${CMAKE_INSTALL_LIBDIR}"
+        )
+    else()
+        set_target_properties(${PROJECT_PYTHON_API_NAME} PROPERTIES 
+            INSTALL_RPATH "$ORIGIN/${CMAKE_INSTALL_LIBDIR}"
+        )
+    endif()
 endif()
