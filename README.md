@@ -6,7 +6,9 @@ A template for a standalone C++ library with dependencies managed by
 ## Why should I use this template?
 - You want to write a C++ library that can be accessed through Python.
 - You want to use `cmake` to build your C++ code.
-- You want to use some C++ dependencies and manage them with `vcpkg`.
+- You want to use some C++ dependencies and manage them with `vcpkg`. Otherwise
+  you should check other [scikit-build sample
+  projects](https://github.com/scikit-build/scikit-build-sample-projects).
 - You are not specially concerned about build and install optimizations, it is
   not a problem if they are long running.
 
@@ -15,6 +17,13 @@ that your users take a long time to install it, then it might be better to
 build some binaries instead of optimizing the build process. This template
 might still be useful for you but you should extend it with
 [`cuibuildwheel](https://github.com/pypa/cibuildwheel).
+
+## Requirements
+Similarly to [`vcpkg`](https://github.com/microsoft/vcpkg) with the addition of
+`cmake`:
+- [`git`](https://git-scm.com/downloads)
+- Build tools (Visual Studio on Windows or `gcc` on Linux for example)
+- [`cmake`](https://cmake.org/download/)
 
 ## Example usage
 
@@ -81,7 +90,7 @@ git clone https://github.com/Microsoft/vcpkg.git
 Bootstrap it in Windows. Make sure you have [installed the
 prerequisites](https://github.com/microsoft/vcpkg).
 ```
-./vcpkg/bootstrap-vcpkg.bat
+.\vcpkg\bootstrap-vcpkg.bat
 ```
 
 Or in Linux/MacOS. Make sure you have [installed developer

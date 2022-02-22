@@ -27,7 +27,6 @@ foreach(_IDX RANGE 0 ${_LIMIT})
     string(JSON VCPKG_DEPENDENCY GET ${vcpkg_json} "dependencies" ${_IDX})
     list(APPEND VCPKG_DEPENDENCIES ${VCPKG_DEPENDENCY})
 endforeach()
-message(STATUS "VCPKG_DEPENDENCIES: ${VCPKG_DEPENDENCIES}")
 
 project(${PROJECT_NAME} VERSION ${VERSION_STRING})
 
