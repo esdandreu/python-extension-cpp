@@ -1,7 +1,7 @@
 # Python C++ extension
 A template for a standalone C++ library with dependencies managed by
-[`vcpkg`](https://github.com/microsoft/vcpkg) accessible through Python using
-[`pybind11`](https://github.com/pybind/pybind11).
+[vcpkg](https://github.com/microsoft/vcpkg) accessible through Python using
+[pybind11](https://github.com/pybind/pybind11).
 
 ## Why should I use this template?
 - You want to write a C++ library that can be accessed through Python.
@@ -16,14 +16,14 @@ If you want to distribute your extension using `pip` or `conda` and you mind
 that your users take a long time to install it, then it might be better to
 build some binaries instead of optimizing the build process. This template
 might still be useful for you but you should extend it with
-[`cuibuildwheel](https://github.com/pypa/cibuildwheel).
+[cuibuildwheel](https://github.com/pypa/cibuildwheel).
 
 ## Requirements
 Similarly to [`vcpkg`](https://github.com/microsoft/vcpkg) with the addition of
 `cmake`:
-- [`git`](https://git-scm.com/downloads)
+- [git](https://git-scm.com/downloads)
 - Build tools (Visual Studio on Windows or `gcc` on Linux for example)
-- [`cmake`](https://cmake.org/download/)
+- [cmake](https://cmake.org/download/)
 
 ## Example usage
 
@@ -58,7 +58,7 @@ python -c "import myproject; print(myproject.add(1, 2))"
 ```
 
 It also makes use of the C++ library
-[`fftw3`](https://github.com/FFTW/fftw3.git) that is available through `vcpkg`
+[fftw3](https://github.com/FFTW/fftw3.git) that is available through `vcpkg`
 in order to perform a Fast Fourier Transform over a generated signal, printing
 its results.
 ```
