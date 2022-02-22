@@ -18,6 +18,11 @@ if (NOT DEFINED CMAKE_TOOLCHAIN_FILE)
 endif()
 if (DEFINED CMAKE_TOOLCHAIN_FILE) # Print useful information
     message(STATUS "Using toolchain: ${CMAKE_TOOLCHAIN_FILE}")
+else()
+    message(STATUS "\
+Not using `vcpkg`. Consider adding it to manage \
+dependencies https://github.com/microsoft/vcpkg.git"
+    )
 endif()
 
 message(STATUS "CMAKE Python Libdir: ${CMAKE_INSTALL_PYTHON_LIBDIR}")
@@ -132,13 +137,13 @@ if(BUILD_PYTHON_API)
     # Placing the python API in the package and using relative RPATHs that
     # doesn't point outside of the package means that the built package is
     # relocatable. This allows for safe binary redistribution.
-    if(APPLE)
-        set_target_properties(${PROJECT_PYTHON_API_NAME} PROPERTIES 
-            INSTALL_RPATH "@loader_path/${CMAKE_INSTALL_LIBDIR}"
-        )
-    else()
-        set_target_properties(${PROJECT_PYTHON_API_NAME} PROPERTIES 
-            INSTALL_RPATH "$ORIGIN/${CMAKE_INSTALL_LIBDIR}"
-        )
-    endif()
+    # if(APPLE)
+    #     set_target_properties(${PROJECT_PYTHON_API_NAME} PROPERTIES 
+    #         INSTALL_RPATH "@loader_path/${CMAKE_INSTALL_LIBDIR}"
+    #     )
+    # else()
+    #     set_target_properties(${PROJECT_PYTHON_API_NAME} PROPERTIES 
+    #         INSTALL_RPATH "$ORIGIN/${CMAKE_INSTALL_LIBDIR}"
+    #     )
+    # endif()
 endif()

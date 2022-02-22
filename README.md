@@ -30,6 +30,7 @@ for Linux) you will need to install some additional tools as it is stated in
 `vcpkg`.
 ```
 sudo apt-get install curl zip unzip tar pkg-config
+```
 ## Example usage
 
 ### Create a clean Python virtual environment
@@ -117,4 +118,10 @@ pip install setuptools wheel scikit-build cmake ninja GitPython
 
 ```
 python setup.py install
+```
+
+# Troubleshooting
+I faced the scenario where the build failed with the following error:
+```
+Failed to parse CMake console output to locate port start/end markers
 ```

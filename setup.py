@@ -55,7 +55,8 @@ setup(
     # ! if `src/python` or its `__init__.py` is refactored, the following 
     # ! arguments should be modified accordingly
     packages=[PROJECT_NAME],
-    package_dir={PROJECT_NAME: PROJECT_SOURCE_DIR / "src" / "python"},
+    package_dir={PROJECT_NAME: str(PROJECT_SOURCE_DIR / "src" / "python")},
+    # package_dir={PROJECT_NAME: "src/python"},
     cmake_install_dir=PROJECT_NAME,
     # CMake must be used allways, otherwise C++ dependencies won't be installed
     cmake_with_sdist=True, 
