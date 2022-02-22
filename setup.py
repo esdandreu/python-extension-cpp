@@ -2,7 +2,6 @@ from gettext import find
 import json
 import sys
 
-from setuptools import find_packages
 from pathlib import Path
 from shutil import rmtree
 

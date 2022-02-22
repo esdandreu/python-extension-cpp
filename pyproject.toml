@@ -5,6 +5,7 @@ requires = [
     "scikit-build>=0.13",
     "cmake>=3.21",
     "ninja",
+    "pybind11",
     "GitPython",
 ]
 

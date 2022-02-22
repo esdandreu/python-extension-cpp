@@ -47,7 +47,6 @@ endforeach()
 
 project(${PROJECT_NAME} VERSION ${VERSION_STRING})
 
-
 # It is recommended to split this file into multiple files and use
 # `add_submodule` if it starts to grow too large.
 
@@ -75,15 +74,15 @@ target_link_libraries(${PROJECT_NAME}
 # ----------------------------- Build python api ------------------------------
 # Recomended refactor into src/python/CMakeLists.txt
 
-# Option for building the project Python API, setup.py defines this variable
+# Option for building the project Python API, `setup.py` defines this variable
 option(BUILD_PYTHON_API "Build the python API" OFF)
 if(BUILD_PYTHON_API)
     message(STATUS "Build Python API")
 
     if(SKBUILD)
         # Scikit-Build does not add your site-packages to the search path
-        # automatically, so we need to add it _or_ the pybind11 specific
-        # directory here.
+        # automatically, so we need to add the pybind11 specific directory
+        # here.
         execute_process(
             COMMAND "${PYTHON_EXECUTABLE}" -c
                     "import pybind11; print(pybind11.get_cmake_dir())"
