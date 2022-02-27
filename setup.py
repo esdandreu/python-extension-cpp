@@ -79,8 +79,8 @@ setup(
     packages=packages,
     package_dir={"": python_packages_root},
     cmake_install_dir=python_packages_root + "/" + packages[0],
-    # cmake_install_dir=add Lib/site-packages for pip PROJECT_NAME,
     # CMake must be used allways, otherwise C++ dependencies won't be installed
+    setup_requires=["cmake"],
     cmake_with_sdist=True, 
     # Signal cmake to use `vcpkg`
     cmake_args=[

@@ -19,19 +19,7 @@ build some binaries instead of optimizing the build process. This template
 might still be useful for you but you should extend it with
 [cuibuildwheel](https://github.com/pypa/cibuildwheel).
 
-## Requirements
-Check [vcpkg](https://github.com/microsoft/vcpkg) with the addition of
-`cmake`:
-- [git](https://git-scm.com/downloads)
-- Build tools (Visual Studio on Windows or `gcc` on Linux for example)
-- [cmake](https://cmake.org/download/)
 
-If running on a clean linux environment (like a container or Windows Subsystem
-for Linux) you will need to install some additional tools as it is stated in
-`vcpkg`.
-```
-sudo apt-get install curl zip unzip tar pkg-config libssl
-```
 ## Example usage
 
 ### Create a clean Python virtual environment
@@ -73,7 +61,22 @@ python -c "import pyproject; pyproject.hello_fft()"
 ```
 
 ## Setup
-### Install CMake
+### Install the requirements
+Install [vcpkg](https://github.com/microsoft/vcpkg) requirements with the
+addition of `cmake`. It could be summarized as:
+- [git](https://git-scm.com/downloads)
+- Build tools ([Visual
+  Studio](https://docs.microsoft.com/en-us/visualstudio/install/install-visual-studio)
+  on Windows or `gcc` on Linux for example)
+- [cmake](#cmake)
+
+If running on a clean linux environment (like a container or Windows Subsystem
+for Linux) you will need to install some additional tools as it is stated in
+`vcpkg`.
+```
+sudo apt-get install curl zip unzip tar pkg-config libssl
+```
+#### CMake
 Follow the [official instructions](https://cmake.org/install/).
 
 The required `cmake` version is quite high, if you are using a Linux
