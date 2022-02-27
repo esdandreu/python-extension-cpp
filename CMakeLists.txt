@@ -31,14 +31,6 @@ endif()
 file(READ ${CMAKE_SOURCE_DIR}/vcpkg.json vcpkg_json)
 string(JSON PROJECT_NAME GET ${vcpkg_json} "name")
 string(JSON VERSION_STRING GET ${vcpkg_json} "version-string")
-# Additionally, we will extract the `vcpkg` dependencies from `vckpkg.json` so
-# we can install them in together with the python API.
-string(JSON VCPKG_DEPENDENCIES_LENGTH LENGTH ${vcpkg_json} "dependencies")
-math(EXPR _LIMIT "${VCPKG_DEPENDENCIES_LENGTH} - 1")
-foreach(_IDX RANGE 0 ${_LIMIT})
-    string(JSON VCPKG_DEPENDENCY GET ${vcpkg_json} "dependencies" ${_IDX})
-    list(APPEND VCPKG_DEPENDENCIES ${VCPKG_DEPENDENCY})
-endforeach()
 
 project(${PROJECT_NAME} VERSION ${VERSION_STRING})
 
@@ -145,9 +137,21 @@ if(BUILD_PYTHON_API)
             VERSION_INFO=${PROJECT_VERSION}
     )
 
-    # Install the `vcpkg` dependencies in the same DESTINATION as the python
-    # API. Note that it only supports collecting the runtime dependencies for
-    # Windows, Linux and macOS platforms.
+    # Extract the `vcpkg` dependencies from `vckpkg.json` so we can install
+    # them together with the python API.
+    string(JSON VCPKG_DEPENDENCIES_LENGTH LENGTH ${vcpkg_json} "dependencies")
+    math(EXPR _LIMIT "${VCPKG_DEPENDENCIES_LENGTH} - 1")
+    foreach(_IDX RANGE 0 ${_LIMIT})
+        string(JSON VCPKG_DEPENDENCY GET ${vcpkg_json} "dependencies" ${_IDX})
+        list(APPEND VCPKG_DEPENDENCIES ${VCPKG_DEPENDENCY})
+    endforeach()
+
+    # Install the `vcpkg` dependencies that are used in our ${PROJECT_NAME}
+    # library in the same DESTINATION as the python API. Google Test and
+    # `pybind11` are `vcpkg` dependencies but they are not used at runtime,
+    # only when building and therefore they won't be installed. Note that it
+    # only supports collecting the runtime dependencies for Windows, Linux and
+    # macOS platforms.
     install(TARGETS ${PROJECT_PYTHON_API_NAME}
         RUNTIME_DEPENDENCIES 
             PRE_INCLUDE_REGEXES ${VCPKG_DEPENDENCIES}

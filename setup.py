@@ -30,9 +30,18 @@ if SKBUILD_DIR.exists():
 VCPKG_DIR = PROJECT_SOURCE_DIR / "vcpkg"
 VCPKG_CMAKE_TOOLCHAIN = VCPKG_DIR / "scripts" / "buildsystems" / "vcpkg.cmake"
 if not VCPKG_CMAKE_TOOLCHAIN.is_file():
-    from git import Git
-    print("Cloning `vcpkg`...")
-    vcpkg = Git(PROJECT_SOURCE_DIR).clone('https://github.com/microsoft/vcpkg')
+    # Clone `vcpkg` in the repository root. Not needed if `vcpkg` is a
+    # submodule of the repository.
+    # from git import Git
+    # print("Cloning `vcpkg`...")
+    # Git(PROJECT_SOURCE_DIR).clone('https://github.com/microsoft/vcpkg')
+    
+    # Update the current repository submodules. `vcpkg` is a submodule of this
+    # repository.
+    from git import Repo
+    Repo(PROJECT_SOURCE_DIR).submodule_update(init=True, recursive=True)
+
+
 
 # In order to avoid specifying package name and version in multiple files, we
 # will use `vcpkg.json` in the repository root as reference and extract the

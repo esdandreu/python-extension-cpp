@@ -87,14 +87,15 @@ The reason for this is that we are using some of the `3.21` features to install
 runtime dependencies (managed with `vcpkg`) together with our project so they
 are available to Python when using its API.
 
-### [Add `vcpkg` to the repository](https://vcpkg.io/en/getting-started.html)
+### Clone this repository with `vcpkg`
 
-Navigate to where this repository is cloned and clone `vcpkg` there.
+Cone this repository with `vcpkg` as a submodule and navigate into it.
 ```
-git clone https://github.com/Microsoft/vcpkg.git
+git clone --recursive git@github.com:esdandreu/python-extension-cpp.git
+cd python-extension-cpp
 ```
 
-Bootstrap it in Windows. Make sure you have [installed the
+Bootstrap `vcpkg` in Windows. Make sure you have [installed the
 prerequisites](https://github.com/microsoft/vcpkg).
 ```
 .\vcpkg\bootstrap-vcpkg.bat

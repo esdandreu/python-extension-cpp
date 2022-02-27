@@ -13,12 +13,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          submodules: true
 
-      # Used to host cibuildwheel
-      - uses: actions/setup-python@v2
+      - uses: pypa/cibuildwheel@v2.3.1
 
-      - name: Install cibuildwheel
-        run: python -m pip install cibuildwheel==2.3.1
+      - name: Verify clean directory
+        run: git diff --exit-code
+        shell: bash
 
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse
