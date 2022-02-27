@@ -4,6 +4,7 @@
     "description": "A minimal example library using pybind11 and vcpkg",
     "dependencies": [
         "pybind11",
-        "fftw3"
+        "fftw3",
+        "gtest"
     ]
 }

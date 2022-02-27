@@ -77,6 +77,7 @@ setup(
     cmake_args=[
         f"-DCMAKE_TOOLCHAIN_FILE:PATH={str(VCPKG_CMAKE_TOOLCHAIN.resolve())}",
         "-DBUILD_PYTHON_API=ON",
+        "-DBUILD_TESTS=OFF",
         ],
     # Extra setuptools keywords:
     # https://setuptools.pypa.io/en/latest/userguide/keywords.html

@@ -6,6 +6,7 @@ A template for a standalone C++ library with dependencies managed by
 ## Why should I use this template?
 - You want to write a C++ library that can be accessed through Python.
 - You want to use `cmake` to build your C++ code.
+- You want to use `pybind11` to expose your C++ library as a Python module.
 - You want to use some C++ dependencies and manage them with `vcpkg`. Otherwise
   you should check other [scikit-build sample
   projects](https://github.com/scikit-build/scikit-build-sample-projects).
@@ -57,7 +58,7 @@ from source dependencies that might as well be installed on the system. But
 this allows a fast development environment where adding or removing C++
 dependencies should be easy.
 
-### Test that the C++ code is working
+### Test that the C++ code is working in the Python package
 Our simple project contains a `add` function that adds two numbers together.
 ```
 python -c "import pyproject; print(pyproject.add(1, 2))"
@@ -105,12 +106,9 @@ tools](https://github.com/microsoft/vcpkg)
 ./vcpkg/bootstrap-vcpkg.sh
 ```
 
-### Run python tests
+## Building
 
-```
-pytest .\tests\
-```
-
+### Build locally with CMake
 ### Build locally with Python
 
 It is recommended to use a [clean virtual
@@ -128,6 +126,15 @@ Install the repository. By adding `[test]` to our install command we can
 install additionally the test dependencies.
 ```
 pip install .[test]
+```
+
+
+## Testing
+
+### Test the C++ library with Google Test
+
+```
+ctest --test-dir .\build\
 ```
 
 ### Test the python extension

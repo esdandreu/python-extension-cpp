@@ -66,19 +66,46 @@ target_link_libraries(${PROJECT_NAME}
         FFTW3::fftw3
 )
 
+# ---------------------------- Build library tests ----------------------------
+# Recomended refactor into tests/CMakeLists.txt
+
+option(BUILD_TESTS "Build tests" ON)
+if(BUILD_TESTS)
+    message(STATUS "Build tests")
+    find_package(GTEST CONFIG REQUIRED)
+
+    enable_testing()
+
+    # Tests can be run with `ctest` or by directly running the test executable
+    # that will be named as `${PROJECT_TESTS_NAME}`. The name of the executable
+    # is not really relevant as `ctest` will find it anyway thanks to Google
+    # Test.
+    set(PROJECT_TESTS_NAME test_${PROJECT_NAME})
+
+    # A possible extension here is to add all `.cpp` files under the `tests`
+    # folder.
+    add_executable(${PROJECT_TESTS_NAME} 
+        tests/test_myproject.cpp
+    )
+
+    target_link_libraries(${PROJECT_TESTS_NAME} 
+        PRIVATE
+            ${PROJECT_NAME}
+            GTest::gtest_main
+    )
+
+    include(GoogleTest)
+    gtest_discover_tests(${PROJECT_TESTS_NAME})
+
+endif()
+
 # ----------------------------- Build python api ------------------------------
 # Recomended refactor into src/python/CMakeLists.txt
 
 # Option for building the project Python API, `setup.py` defines this variable
-option(BUILD_PYTHON_API "Build the python API" OFF)
+option(BUILD_PYTHON_API "Build Python API" OFF)
 if(BUILD_PYTHON_API)
     message(STATUS "Build Python API")
-
-    message(STATUS "CMAKE Python Libdir: ${CMAKE_INSTALL_PYTHON_LIBDIR}")
-    message(STATUS "CMAKE Install prefix: ${CMAKE_INSTALL_PREFIX}")
-    message(STATUS "CMAKE Install libdir: ${CMAKE_INSTALL_LIBDIR}")
-    message(STATUS "PYTHONHOME: ${PYTHONHOME}")
-
 
     if(SKBUILD)
         # Scikit-Build does not add your site-packages to the search path
@@ -127,23 +154,4 @@ if(BUILD_PYTHON_API)
             PRE_EXCLUDE_REGEXES ".*"
         DESTINATION .
     )
-
-    # The extension module must load the hello library as a dependency when the
-    # extension module is loaded. The easiest way to locate the hello library
-    # is via RPATH. Absolute RPATHs are possible, but they make the resulting
-    # binaries not redistributable to other Python installations (conda is
-    # broke, wheel reuse is broke, and more!).
-    #
-    # Placing the python API in the package and using relative RPATHs that
-    # doesn't point outside of the package means that the built package is
-    # relocatable. This allows for safe binary redistribution.
-    # if(APPLE)
-    #     set_target_properties(${PROJECT_PYTHON_API_NAME} PROPERTIES 
-    #         INSTALL_RPATH "@loader_path/${CMAKE_INSTALL_LIBDIR}"
-    #     )
-    # else()
-    #     set_target_properties(${PROJECT_PYTHON_API_NAME} PROPERTIES 
-    #         INSTALL_RPATH "$ORIGIN/${CMAKE_INSTALL_LIBDIR}"
-    #     )
-    # endif()
 endif()
