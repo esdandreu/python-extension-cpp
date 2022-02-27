@@ -52,11 +52,11 @@ with open(PROJECT_SOURCE_DIR / "vcpkg.json") as f:
 # ! contains the `__init__.py` file must be changed.
 python_packages_root = "src/python"
 packages = find_packages(python_packages_root)
-if len(packages) > 0:
+if len(packages) > 1:
     warnings.warn(
         "This extension is not supposed to have more than one package. The "
-        f"compiled C++ code will be placed *only* in {packages[0]}. The rest "
-        f"of packages {packages[1:]} won't have access to C++ code."
+        f"compiled C++ code will be placed only in `{packages[0]}`. The "
+        f"rest of packages {packages[1:]} won't have access to C++ code."
         )
 
 setup(
