@@ -105,18 +105,35 @@ tools](https://github.com/microsoft/vcpkg)
 ./vcpkg/bootstrap-vcpkg.sh
 ```
 
-### Test building locally with Python
+### Run python tests
 
-It is recommended to use a clean virtual environment
+```
+pytest .\tests\
+```
 
-Install the required Python build dependencies
+### Build locally with Python
+
+It is recommended to use a [clean virtual
+environment](#create-a-clean-python-virtual-environment).
+
+`scikit-build` is required before running the installer, as it is the package
+that takes care of the installation. The rest of dependencies will be installed
+automatically.
 
 ```
 pip install scikit-build
 ```
 
+Install the repository. By adding `[test]` to our install command we can
+install additionally the test dependencies.
 ```
-pip install .
+pip install .[test]
+```
+
+### Test the python extension
+
+```
+pytest tests
 ```
 
 # Troubleshooting
