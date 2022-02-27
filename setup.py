@@ -1,9 +1,10 @@
-from gettext import find
+import warnings
 import json
 import sys
 
 from pathlib import Path
 from shutil import rmtree
+from setuptools import find_packages
 
 try:
     from skbuild import setup
@@ -42,6 +43,22 @@ with open(PROJECT_SOURCE_DIR / "vcpkg.json") as f:
     PROJECT_NAME = vcpkg_json["name"]
     PROJECT_VERSION_STRING = vcpkg_json["version-string"]
 
+# scikit-build will take care of puting our compiled C++ library together with
+# our python package so it can access it. The name of the python package will
+# be determined by the name of the folder that contains an `__init__.py` file.
+# In this repository, python packages must be placed under path defined by
+# `python_packages_root`.
+# ! In order to change the name of the package, the name of the folder that
+# ! contains the `__init__.py` file must be changed.
+python_packages_root = "src/python"
+packages = find_packages(python_packages_root)
+if len(packages) > 0:
+    warnings.warn(
+        "This extension is not supposed to have more than one package. The "
+        f"compiled C++ code will be placed *only* in {packages[0]}. The rest "
+        f"of packages {packages[1:]} won't have access to C++ code."
+        )
+
 setup(
     # Python package information, can be edited
     name=PROJECT_NAME,
@@ -49,14 +66,11 @@ setup(
     description="A minimal C++ extension using pybind11 and vcpkg",
     author="Andreu Gimenez",
     license="MIT",
-    # All Python code that is placed in `src/python` will be available to be
-    # imported as `import $PROJECT_NAME`
-    # ! if `src/python` or its `__init__.py` is refactored, the following 
-    # ! arguments should be modified accordingly
-    packages=[PROJECT_NAME],
-    package_dir={PROJECT_NAME: str(PROJECT_SOURCE_DIR / "src" / "python")},
-    # package_dir={PROJECT_NAME: "src/python"},
-    cmake_install_dir=PROJECT_NAME,
+    # Python package information is defined above
+    packages=packages,
+    package_dir={"": python_packages_root},
+    cmake_install_dir=python_packages_root + "/" + packages[0],
+    # cmake_install_dir=add Lib/site-packages for pip PROJECT_NAME,
     # CMake must be used allways, otherwise C++ dependencies won't be installed
     cmake_with_sdist=True, 
     # Signal cmake to use `vcpkg`

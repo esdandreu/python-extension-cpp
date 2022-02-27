@@ -25,11 +25,6 @@ dependencies https://github.com/microsoft/vcpkg.git"
     )
 endif()
 
-message(STATUS "CMAKE Python Libdir: ${CMAKE_INSTALL_PYTHON_LIBDIR}")
-message(STATUS "CMAKE Install prefix: ${CMAKE_INSTALL_PREFIX}")
-message(STATUS "CMAKE Install libdir: ${CMAKE_INSTALL_LIBDIR}")
-message(STATUS "project binary dir: ${myproject_BINARY_DIR}")
-
 # In order to avoid specifying package name and version in multiple files, we
 # will use `vcpkg.json` in the repository root as reference and extract the
 # apropiate variables from there.
@@ -78,6 +73,12 @@ target_link_libraries(${PROJECT_NAME}
 option(BUILD_PYTHON_API "Build the python API" OFF)
 if(BUILD_PYTHON_API)
     message(STATUS "Build Python API")
+
+    message(STATUS "CMAKE Python Libdir: ${CMAKE_INSTALL_PYTHON_LIBDIR}")
+    message(STATUS "CMAKE Install prefix: ${CMAKE_INSTALL_PREFIX}")
+    message(STATUS "CMAKE Install libdir: ${CMAKE_INSTALL_LIBDIR}")
+    message(STATUS "PYTHONHOME: ${PYTHONHOME}")
+
 
     if(SKBUILD)
         # Scikit-Build does not add your site-packages to the search path

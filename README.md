@@ -29,7 +29,7 @@ If running on a clean linux environment (like a container or Windows Subsystem
 for Linux) you will need to install some additional tools as it is stated in
 `vcpkg`.
 ```
-sudo apt-get install curl zip unzip tar pkg-config
+sudo apt-get install curl zip unzip tar pkg-config libssl
 ```
 ## Example usage
 
@@ -60,7 +60,7 @@ dependencies should be easy.
 ### Test that the C++ code is working
 Our simple project contains a `add` function that adds two numbers together.
 ```
-python -c "import myproject; print(myproject.add(1, 2))"
+python -c "import pyproject; print(pyproject.add(1, 2))"
 ```
 
 It also makes use of the C++ library
@@ -68,7 +68,7 @@ It also makes use of the C++ library
 in order to perform a Fast Fourier Transform over a generated signal, printing
 its results.
 ```
-python -c "import myproject; myproject.hello_fft()"
+python -c "import pyproject; pyproject.hello_fft()"
 ```
 
 ## Setup
@@ -112,12 +112,11 @@ It is recommended to use a clean virtual environment
 Install the required Python build dependencies
 
 ```
-pip install setuptools wheel scikit-build cmake ninja GitPython
+pip install scikit-build
 ```
-<!-- pip install setuptools wheel pybind11 cmake scikit-build GitPython -->
 
 ```
-python setup.py install
+pip install .
 ```
 
 # Troubleshooting
@@ -125,3 +124,6 @@ I faced the scenario where the build failed with the following error:
 ```
 Failed to parse CMake console output to locate port start/end markers
 ```
+I had to delete the `vcpkg` cache (located in
+`C:\Users\<user>\AppData\Local\vcpkg` on Windows and in `~/.cache/vcpkg` on
+Linux), reinstall `cmake` and try again.
