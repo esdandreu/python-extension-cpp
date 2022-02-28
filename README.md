@@ -155,3 +155,12 @@ Failed to parse CMake console output to locate port start/end markers
 I had to delete the `vcpkg` cache (located in
 `C:\Users\<user>\AppData\Local\vcpkg` on Windows and in `~/.cache/vcpkg` on
 Linux), reinstall `cmake` and try again.
+
+Next issue should be fixed by having `python3` as a dependency in `vcpkg`. But
+in Linux you need to install `python3-dev` in order to have Python C headers
+needed by `pybind11`.
+```
+Imported target "pybind11::module" includes non-existent path
+
+          "/usr/include/python3.8"
+```

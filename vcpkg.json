@@ -3,6 +3,7 @@
     "version-string": "0.0.1",
     "description": "A minimal example library using pybind11 and vcpkg",
     "dependencies": [
+        "python3",
         "pybind11",
         "fftw3",
         "gtest"
