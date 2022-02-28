@@ -80,7 +80,7 @@ setup(
     package_dir={"": python_packages_root},
     cmake_install_dir=python_packages_root + "/" + packages[0],
     # CMake must be used allways, otherwise C++ dependencies won't be installed
-    # setup_requires=["cmake"],
+    # ! setup_requires=["cmake"] should not be used, as it causes `vcpkg` to fail
     cmake_with_sdist=True, 
     # Signal cmake to use `vcpkg`
     cmake_args=[
