@@ -1,6 +1,10 @@
 # Installing RUNTIME_DEPENDENCIES requires at least CMake version 3.21
 cmake_minimum_required(VERSION 3.21)
 
+# Compliler flags
+set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall --std=c++17 -O3 -fPIC" )
+set( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wall -O3 -fPIC" )
+
 # Set CMake to use `vcpkg` to install dependencies. I avoids the need of
 # passing it as an argument to `cmake`.
 # https://github.com/microsoft/vcpkg/blob/master/docs/users/integration.md#using-an-environment-variable-instead-of-a-command-line-option
