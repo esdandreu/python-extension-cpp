@@ -162,12 +162,3 @@ ctest --test-dir build
 ```
 pytest tests
 ```
-
-# Troubleshooting
-I faced the scenario where the build failed with the following error:
-```
-Failed to parse CMake console output to locate port start/end markers
-```
-I had to delete the `vcpkg` cache (located in
-`C:\Users\<user>\AppData\Local\vcpkg` on Windows and in `~/.cache/vcpkg` on
-Linux), reinstall `cmake` and try again.

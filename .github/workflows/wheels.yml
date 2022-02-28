@@ -1,6 +1,11 @@
 name: Build Python wheels
 
-on: [push, pull_request]
+on: 
+  workflow_dispatch:
+  # Uncomment to build when pushing to main
+  # push:
+  #   branches:
+  #     - "main"
 
 jobs:
   build_wheels:
@@ -21,9 +26,6 @@ jobs:
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.3.1
-        # to supply options, put them in 'env', like:
-        # env:
-        #   CIBW_SOME_OPTION: value
 
       - uses: actions/upload-artifact@v2
         with:

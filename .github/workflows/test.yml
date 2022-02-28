@@ -1,0 +1,78 @@
+name: Build and test
+
+on: 
+  workflow_dispatch:
+  # Uncomment to build when pushing to main
+  push:
+    branches:
+      - "main"
+
+jobs:
+  cpp:
+    name: ${{ github.workflow }} C++ library on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: windows-latest
+            triplet: x64-windows
+          - os: ubuntu-latest
+            triplet: x64-linux
+          - os: macos-latest
+            triplet: x64-osx
+    env:
+      VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Restore artifacts, or setup vcpkg for building artifacts
+        uses: lukka/run-vcpkg@v10.1
+
+      - name: Create a build directory
+        run: mkdir build
+
+      - name: Configure cmake
+        run: > 
+          cmake -B build -S . 
+          -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      
+      - name: Build with cmake
+        run: cmake --build build --config Release
+
+      - name: Test
+        run: ctest --test-dir build
+
+  python:
+    name: ${{ github.workflow }} Python package on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Restore artifacts, or setup vcpkg for building artifacts
+        uses: lukka/run-vcpkg@v10.1
+      
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+        
+      - name: Install scikit-build
+        run: pip install scikit-build
+
+      - name: Build and install with pip
+        run: pip install ${{ github.workspace }}[test]
+
+      - name: Test
+        run: pytest tests
