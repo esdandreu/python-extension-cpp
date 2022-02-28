@@ -74,7 +74,7 @@ If running on a clean linux environment (like a container or Windows Subsystem
 for Linux) you will need to install some additional tools as it is stated in
 `vcpkg`.
 ```
-sudo apt-get install curl zip unzip tar pkg-config libssl
+sudo apt-get install curl zip unzip tar pkg-config libssl python3-dev
 ```
 #### CMake
 Follow the [official instructions](https://cmake.org/install/).

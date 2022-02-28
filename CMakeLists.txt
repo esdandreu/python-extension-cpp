@@ -98,6 +98,7 @@ endif()
 option(BUILD_PYTHON_API "Build Python API" OFF)
 if(BUILD_PYTHON_API)
     message(STATUS "Build Python API")
+
     message(STATUS "Python executable: ${PYTHON_EXECUTABLE}")
 
     if(SKBUILD)
@@ -114,7 +115,6 @@ if(BUILD_PYTHON_API)
     endif()
 
     # Now we can find pybind11
-    find_package(Python3 COMPONENTS Development REQUIRED)
     find_package(pybind11 CONFIG REQUIRED)
 
     # Take into account that this name should be consistent with the contents
@@ -132,7 +132,6 @@ if(BUILD_PYTHON_API)
     target_link_libraries(${PROJECT_PYTHON_API_NAME} 
         PRIVATE
             ${PROJECT_NAME}
-            Python3::Python
     )
 
     target_compile_definitions(${PROJECT_PYTHON_API_NAME} 
