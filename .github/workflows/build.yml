@@ -37,24 +37,22 @@ jobs:
         with:
           submodules: true
 
-      - uses: lukka/get-cmake@latest
-      - name: dir
-        run: find $RUNNER_WORKSPACE
-        shell: bash
+      # - uses: lukka/get-cmake@latest
 
-      - name: Restore artifacts, or setup vcpkg for building artifacts
-        uses: lukka/run-vcpkg@v10.1
-        id: runvcpkg
-        with:
-          vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-          vcpkgJsonGlob: '${{ github.workspace }}/vcpkg.json'
+      # - name: Restore artifacts, or setup vcpkg for building artifacts
+      #   uses: lukka/run-vcpkg@v10.1
+      #   id: runvcpkg
+      #   with:
+      #     vcpkgDirectory: '${{ github.workspace }}/vcpkg'
+      #     vcpkgJsonGlob: '${{ github.workspace }}/vcpkg.json'
 
-      - name: List $RUNNER_WORKSPACE before build
-        run: find $RUNNER_WORKSPACE
-        shell: bash
+      - name: Create a build directory
+        run: mkdir build
 
-      - name: Prints output of run-vcpkg's action.
-        run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}' "
-
-      - name: Run CMake+vcpkg+Ninja
-        run: cmake -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      - name: Configure cmake
+        run: > 
+          cmake -B build -S . 
+          -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      
+      - name: Build with cmake
+        run: cmake --build build --config Release

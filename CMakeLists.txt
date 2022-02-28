@@ -64,7 +64,7 @@ target_link_libraries(${PROJECT_NAME}
 option(BUILD_TESTS "Build tests" ON)
 if(BUILD_TESTS)
     message(STATUS "Build tests")
-    find_package(GTEST CONFIG REQUIRED)
+    find_package(GTest CONFIG REQUIRED)
 
     enable_testing()
 

@@ -113,6 +113,20 @@ tools](https://github.com/microsoft/vcpkg)
 ## Building
 
 ### Build locally with CMake
+Navigate to the root of the repository and create a build directory.
+```
+mkdir build
+```
+
+Configure `cmake` to use `vcpkg`.
+```
+cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE="$pwd/vcpkg/scripts/buildsystems/vcpkg.cmake"
+```
+
+Build the project.
+```
+cmake --build build
+```
 ### Build locally with Python
 
 It is recommended to use a [clean virtual
@@ -138,7 +152,7 @@ pip install .[test]
 ### Test the C++ library with Google Test
 
 ```
-ctest --test-dir .\build\
+ctest --test-dir build
 ```
 
 ### Test the python extension
