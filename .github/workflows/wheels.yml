@@ -16,16 +16,10 @@ jobs:
         with:
           submodules: true
         
-      - uses: lukka/get-cmake@latest
-      - name: dir
-        run: find $RUNNER_WORKSPACE
-        shell: bash
+      - name: Restore artifacts, or setup vcpkg for building artifacts
+        uses: lukka/run-vcpkg@v10.1
 
       - uses: pypa/cibuildwheel@v2.3.1
-
-      - name: Verify clean directory
-        run: git diff --exit-code
-        shell: bash
 
       - name: Build wheels
         run: python -m cibuildwheel --output-dir wheelhouse
