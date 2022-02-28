@@ -63,18 +63,20 @@ python -c "import pyproject; pyproject.hello_fft()"
 ## Setup
 ### Install the requirements
 Install [vcpkg](https://github.com/microsoft/vcpkg) requirements with the
-addition of `cmake`. It could be summarized as:
+addition of `cmake` and Python. It could be summarized as:
 - [git](https://git-scm.com/downloads)
 - Build tools ([Visual
   Studio](https://docs.microsoft.com/en-us/visualstudio/install/install-visual-studio)
   on Windows or `gcc` on Linux for example)
 - [cmake](#cmake)
+- Python. Make sure to have development tools installed (`python3.X-dev` on
+  Linux, being `X` your version of Python).
 
 If running on a clean linux environment (like a container or Windows Subsystem
 for Linux) you will need to install some additional tools as it is stated in
 `vcpkg`.
 ```
-sudo apt-get install curl zip unzip tar pkg-config libssl python3-dev
+sudo apt-get install build-essential curl zip unzip tar pkg-config libssl-dev python3-dev
 ```
 #### CMake
 Follow the [official instructions](https://cmake.org/install/).
