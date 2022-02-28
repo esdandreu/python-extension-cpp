@@ -15,6 +15,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
+        
+      - uses: lukka/get-cmake@latest
+      - name: dir
+        run: find $RUNNER_WORKSPACE
+        shell: bash
 
       - uses: pypa/cibuildwheel@v2.3.1
 
