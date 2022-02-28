@@ -1,21 +1,9 @@
-# Copyright (c) 2019-2020-2021-2022 Luca Cappa
-# Released under the term specified in file LICENSE.txt
-# SPDX short identifier: MIT
-#
-# The peculiarity of this workflow is that assumes vcpkg stored as a submodule of this repository.
-# This workflow does the following:
-# - Restores vcpkg artifacts from cache.
-# - Sets up vcpkg if needed, then run CMake with CMakePreset.json using a configuration
-#   that leverages the vcpkg's toolchain file. This will automatically run vcpkg to install dependencies
-#   described by the vcpkg.json manifest file. It will be a no-op if those are restored from cache.
-# - Finally builds the sources with Ninja.
-
-name: hosted-ninja-vcpkg_submod-triplet-autocache
+name: Build and test C++ library
 on: [push, workflow_dispatch]
 
 jobs:
-  build_with_vcpkg:
-    name: Build ${{ matrix.os }}-${{ github.workflow }}
+  build_and_test:
+    name: ${{ github.workflow } on ${{ matrix.os }}-
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -39,12 +27,8 @@ jobs:
 
       # - uses: lukka/get-cmake@latest
 
-      # - name: Restore artifacts, or setup vcpkg for building artifacts
-      #   uses: lukka/run-vcpkg@v10.1
-      #   id: runvcpkg
-      #   with:
-      #     vcpkgDirectory: '${{ github.workspace }}/vcpkg'
-      #     vcpkgJsonGlob: '${{ github.workspace }}/vcpkg.json'
+      - name: Restore artifacts, or setup vcpkg for building artifacts
+        uses: lukka/run-vcpkg@v10.1
 
       - name: Create a build directory
         run: mkdir build
@@ -56,3 +40,6 @@ jobs:
       
       - name: Build with cmake
         run: cmake --build build --config Release
+
+      - name: Test
+        run: ctest --test-dir build
