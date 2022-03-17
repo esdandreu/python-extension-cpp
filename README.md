@@ -161,5 +161,5 @@ ctest --test-dir build
 ### Test the python extension
 
 ```
-pytest tests
+pytest
 ```
