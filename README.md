@@ -93,6 +93,14 @@ The reason for this is that we are using some of the `3.21` features to install
 runtime dependencies (managed with `vcpkg`) together with our project so they
 are available to Python when using its API.
 
+#### Formatters
+This project uses `clang-format` to format the C++ code. There is a
+`.clang-format` file with options that I personally like. Download
+`clang-format` as part of `LLVM` from the official [release
+page](https://github.com/llvm/llvm-project/releases).
+
+I als recommend using `yapf` to format python code.
+
 ### Clone this repository with `vcpkg`
 
 Cone this repository with `vcpkg` as a submodule and navigate into it.
