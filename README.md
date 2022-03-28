@@ -18,7 +18,7 @@ that your users take a long time to install it, then it might be better to
 build some binaries instead of optimizing the build process. This template
 might still be useful for you as it has workflows for building python wheels
 with
-[cuibuildwheel](https://github.com/pypa/cibuildwheel).
+[cibuildwheel](https://github.com/pypa/cibuildwheel).
 
 
 ## Example usage
