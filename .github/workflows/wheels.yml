@@ -30,7 +30,9 @@ jobs:
         uses: pypa/cibuildwheel@v2.3.1
         env:
           # vcpkg does not support i686 nor aarch64
-          CIBW_ARCHS_LINUX: "x86_64 ppc64le s390x"
+          CIBW_ARCHS_LINUX: "x86_64 s390x"
+          # Only build on CPython 3.9
+          CIBW_BUILD: cp39-*
 
       - uses: actions/upload-artifact@v2
         with:
