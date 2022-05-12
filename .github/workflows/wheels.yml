@@ -30,9 +30,11 @@ jobs:
         uses: pypa/cibuildwheel@v2.3.1
         env:
           # vcpkg does not support i686 nor aarch64
-          CIBW_ARCHS_LINUX: "x86_64 s390x"
+          CIBW_ARCHS_LINUX: "x86_64"
           # Only build on CPython 3.9
           CIBW_BUILD: cp39-*
+          # Pre install vcpkg on macOS
+          CIBW_BEFORE_BUILD_MACOS: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh; ${{ github.workspace }}/vcpkg/vcpkg install
 
       - uses: actions/upload-artifact@v2
         with:
