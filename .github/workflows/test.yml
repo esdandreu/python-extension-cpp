@@ -67,6 +67,12 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.7
+
+      - name: Pre install vcpkg
+        run: |
+          ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh 
+          ${{ github.workspace }}/vcpkg/vcpkg install
+        if: ${{ matrix.os == 'macos-latest' }}
         
       - name: Install scikit-build
         run: pip install scikit-build
