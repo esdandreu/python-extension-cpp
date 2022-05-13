@@ -33,6 +33,8 @@ jobs:
           CIBW_ARCHS_LINUX: "x86_64"
           # Only build on CPython 3.9
           CIBW_BUILD: cp39-*
+          # Skip musllinux builds
+          CIBW_SKIP: "*-musllinux_*"
           # Pre install vcpkg on macOS
           CIBW_BEFORE_BUILD_MACOS: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh; ${{ github.workspace }}/vcpkg/vcpkg install
 
