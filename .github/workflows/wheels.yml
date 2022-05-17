@@ -23,6 +23,9 @@ jobs:
         
       - name: Restore artifacts, or setup vcpkg for building artifacts
         uses: lukka/run-vcpkg@v10.1
+      
+      - name: Remove current wheels
+        run: rm -r ./wheelhouse/
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.3.1
