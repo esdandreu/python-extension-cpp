@@ -43,7 +43,8 @@ jobs:
         run: |
           git config --global user.name 'esdandreu'
           git config --global user.email 'esdandreu@users.noreply.github.com'
-          git commit -am "Built wheels"
+          git add wheelhouse/
+          git commit -m "Built wheels"
           git push
 
       - uses: actions/upload-artifact@v2
