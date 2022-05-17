@@ -44,6 +44,7 @@ jobs:
   push_wheelhouse:
     name: Push wheelhouse
     needs: build_wheels
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
