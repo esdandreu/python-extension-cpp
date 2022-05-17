@@ -14,8 +14,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # os: [ubuntu-latest, windows-latest, macOS-latest]
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        python-version: [37, 39]
 
     steps:
       - uses: actions/checkout@v2
@@ -25,19 +25,26 @@ jobs:
       - name: Restore artifacts, or setup vcpkg for building artifacts
         uses: lukka/run-vcpkg@v10.1
 
-
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.3.1
         env:
           # vcpkg does not support i686 nor aarch64
           CIBW_ARCHS_LINUX: "x86_64"
-          # Only build on CPython 3.9
-          CIBW_BUILD: cp39-*
+          # Only build on CPython
+          CIBW_BUILD: cp*
           # Skip musllinux builds
           CIBW_SKIP: "*-musllinux_*"
           # Pre install vcpkg on macOS
           CIBW_BEFORE_BUILD_MACOS: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh; ${{ github.workspace }}/vcpkg/vcpkg install
 
+      - name: Upload wheel
+        run: |
+          git config --global user.name 'esdandreu'
+          git config --global user.email 'esdandreu@users.noreply.github.com'
+          git commit -am "Built wheels"
+          git push
+
       - uses: actions/upload-artifact@v2
         with:
+          name: dist
           path: ./wheelhouse/*.whl
