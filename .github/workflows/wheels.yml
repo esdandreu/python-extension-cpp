@@ -36,7 +36,7 @@ jobs:
           # Pre install vcpkg on macOS
           CIBW_BEFORE_BUILD_MACOS: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh; ${{ github.workspace }}/vcpkg/vcpkg install
 
-      - name: Upload wheel
+      - name: Push wheelhouse
         run: |
           git config --global user.name 'esdandreu'
           git config --global user.email 'esdandreu@users.noreply.github.com'
