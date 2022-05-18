@@ -33,13 +33,16 @@ if not VCPKG_CMAKE_TOOLCHAIN.is_file():
     # Clone `vcpkg` in the repository root. Not needed if `vcpkg` is a
     # submodule of the repository.
     # from git import Git
-    # print("Cloning `vcpkg`...")
     # Git(PROJECT_SOURCE_DIR).clone('https://github.com/microsoft/vcpkg')
     
-    # Update the current repository submodules. `vcpkg` is a submodule of this
-    # repository.
+    # Update `vcpkg` as a submodule of this repository.
     from git import Repo
-    Repo(PROJECT_SOURCE_DIR).submodule_update(init=True, recursive=True)
+    for submodule in  Repo(PROJECT_SOURCE_DIR).submodules:
+        if submodule.name == "vcpkg":
+            submodule.update(init=True)
+            break
+    else:
+        raise RuntimeError("Could not find submodule `vcpkg`")
 
 
 
