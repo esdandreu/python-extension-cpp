@@ -37,11 +37,15 @@ jobs:
           CIBW_BEFORE_BUILD_MACOS: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh; ${{ github.workspace }}/vcpkg/vcpkg install
           CIBW_BEFORE_BUILD_LINUX: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh; ${{ github.workspace }}/vcpkg/vcpkg install
           CIBW_BEFORE_BUILD_WINDOWS: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.bat; ${{ github.workspace }}/vcpkg/vcpkg install
+        with:
+          # ./wheelhouse/ is already populated use a temporal one
+          # push_wheelhouse will take care of updating ./wheelhouse/
+          output-dir: _wheelhouse
 
       - uses: actions/upload-artifact@v2
         with:
           name: dist
-          path: ./wheelhouse/*.whl
+          path: ./_wheelhouse/*.whl
     
   push_wheelhouse:
     name: Push wheelhouse
