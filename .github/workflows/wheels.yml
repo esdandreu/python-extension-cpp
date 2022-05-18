@@ -29,8 +29,6 @@ jobs:
         env:
           # vcpkg does not support i686 nor aarch64
           CIBW_ARCHS_LINUX: "x86_64"
-          # Only build on CPython 3.9 and 3.7
-          # CIBW_BUILD: "cp37-* cp39-*"
           # Skip musllinux builds
           CIBW_SKIP: "*-musllinux_*"
           # Pre install vcpkg (Seems to make the run faster)
