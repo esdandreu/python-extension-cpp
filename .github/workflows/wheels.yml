@@ -35,7 +35,6 @@ jobs:
           CIBW_SKIP: "*-musllinux_*"
           # Pre install vcpkg (Seems to make the run faster)
           CIBW_BEFORE_BUILD_MACOS: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh; ${{ github.workspace }}/vcpkg/vcpkg install
-          CIBW_BEFORE_BUILD_LINUX: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh; ${{ github.workspace }}/vcpkg/vcpkg install
           CIBW_BEFORE_BUILD_WINDOWS: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.bat; ${{ github.workspace }}/vcpkg/vcpkg install
         with:
           # ./wheelhouse/ is already populated use a temporal one
