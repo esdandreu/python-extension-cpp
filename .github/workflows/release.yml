@@ -42,7 +42,7 @@ jobs:
           name: python-wheels
           path: ./wheelhouse/*.whl
   
-  # TODO build sdist
+  # TODO build python sdist
 
   # TODO build C++ library
     
