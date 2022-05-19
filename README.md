@@ -16,10 +16,15 @@ A template for a standalone C++ library with dependencies managed by
 If you want to distribute your extension using `pip` or `conda` and you mind
 that your users take a long time to install it, then it might be better to
 build some binaries instead of optimizing the build process. This template
-might still be useful for you as it has workflows for building python wheels
-with
-[cibuildwheel](https://github.com/pypa/cibuildwheel).
+might still be useful for you as it has a
+[release](.github/workflows/release.yml) workflow for building python wheels
+with [cibuildwheel](https://github.com/pypa/cibuildwheel).
 
+That workflow is activated when pushing a version tag to the repository:
+```
+git tag v0.0.1
+git push origin --tags
+```
 
 ## Example usage
 

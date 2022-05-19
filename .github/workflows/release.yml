@@ -1,11 +1,9 @@
 name: Build release
 
 on: 
-  workflow_dispatch:
-  # Uncomment to build when pushing a tag
-  # push:
-  #   tags:
-  #     - "v*.*.*"
+  push:
+    tags:
+      - "v*.*.*"
 
 jobs:
   build_wheels:
