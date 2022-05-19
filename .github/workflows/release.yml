@@ -1,15 +1,15 @@
-name: Build Python wheels
+name: Build release
 
 on: 
   workflow_dispatch:
-  # Uncomment to build when pushing to main
+  # Uncomment to build when pushing a tag
   # push:
-  #   branches:
-  #     - "main"
+  #   tags:
+  #     - "v*.*.*"
 
 jobs:
   build_wheels:
-    name: Build wheels on ${{ matrix.os }}
+    name: Python wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -18,8 +18,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: true
+
+      - name: Clone vcpkg
+        run: git submodule update --init --recursive ./vcpkg
         
       - name: Restore artifacts, or setup vcpkg for building artifacts
         uses: lukka/run-vcpkg@v10.1
@@ -31,38 +32,34 @@ jobs:
           CIBW_ARCHS_LINUX: "x86_64"
           # Skip musllinux builds
           CIBW_SKIP: "*-musllinux_*"
-          # Pre install vcpkg (Seems to make the run faster)
+          # Pre install vcpkg (needed for macOS)
           CIBW_BEFORE_BUILD_MACOS: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh; ${{ github.workspace }}/vcpkg/vcpkg install
           CIBW_BEFORE_BUILD_WINDOWS: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.bat; ${{ github.workspace }}/vcpkg/vcpkg install
-        with:
-          # ./wheelhouse/ is already populated use a temporal one
-          # push_wheelhouse will take care of updating ./wheelhouse/
-          output-dir: _wheelhouse
 
-      - uses: actions/upload-artifact@v2
+      - name: Upload python wheels
+        uses: actions/upload-artifact@v2
         with:
-          name: dist
-          path: ./_wheelhouse/*.whl
+          name: python-wheels
+          path: ./wheelhouse/*.whl
+  
+  # TODO build sdist
+
+  # TODO build C++ library
     
-  push_wheelhouse:
-    name: Push wheelhouse
+  release:
+    name: Make a Release
     needs: build_wheels
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      - name: Remove current wheels
-        run: rm -f ./wheelhouse/* || true
-
-      - uses: actions/download-artifact@v3
+      - name: Download python wheels
+        uses: actions/download-artifact@v3
         with:
-          name: dist
+          name: python-wheels
           path: ./wheelhouse/
-
-      - name: Push wheelhouse
-        run: |
-          git config --global user.name 'esdandreu'
-          git config --global user.email 'esdandreu@users.noreply.github.com'
-          git add wheelhouse/
-          git commit -m "Built Python wheels"
-          git push
+      
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./wheelhouse/*
