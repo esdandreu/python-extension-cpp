@@ -17,5 +17,4 @@ testpaths = [
     "tests",
 ]
 
-
-[tool.setuptools_scm]
+# [tool.setuptools_scm]
