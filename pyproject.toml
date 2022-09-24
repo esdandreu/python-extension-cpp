@@ -1,6 +1,7 @@
 [build-system]
 requires = [
     "setuptools>=42",
+    "setuptools_scm[toml]>=6.2",
     "wheel",
     "scikit-build>=0.13",
     "ninja",
@@ -15,3 +16,6 @@ minversion = "6.0"
 testpaths = [
     "tests",
 ]
+
+
+[tool.setuptools_scm]
