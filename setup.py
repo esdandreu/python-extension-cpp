@@ -98,4 +98,6 @@ setup(
     # extra dependencies associated with testing. Example `pip install .[test]`
     # https://setuptools.pypa.io/en/latest/userguide/dependency_management.html#optional-dependencies
     extras_require={"test": ["pytest"]},
+    # Necessary to publish to PyPi with the README.md as the long description
+    long_description_content_type="text/markdown",
 )
