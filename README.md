@@ -185,7 +185,9 @@ the C++ library and the python extension
 
 It also contains a continuous deployment workflow that builds wheels and source
 distributions for the python extension, then creates a github release with it
-and uploads it to [PyPI](https://pypi.org/). That workflow is activated when
+and uploads it to [PyPI](https://pypi.org/):
+[release.yml](.github/workflows/release.yml). That workflow requires a
+repository secret named `PYPI_TOKEN` with a PyPI API token. is activated when
 pushing a version tag to the repository:
 ```
 git tag -a v0.0.1 -m "First release"
