@@ -1,3 +1,17 @@
+"""Build setup
+
+Setup the build environment for a C++ python extension module with `vcpkg` as
+C++ package manager. It uses `scikit-build` to build the C++ extension module
+and `GitPython` to pull `vcpkg` when it is defined as a submodule (as it is
+recommended).
+
+It is recommended to set the package metadata in the file `pyproject.toml`
+minimizing the amount of package specific configuration in this file.
+
+Raises:
+    RuntimeError: If `vcpkg` is not a submodule of the repository.
+"""
+
 import warnings
 import json
 import sys
@@ -55,8 +69,7 @@ with open(PROJECT_SOURCE_DIR / "vcpkg.json") as f:
     PROJECT_VERSION_STRING = vcpkg_json["version-string"]
     # A different name can be specified here in order to upload to PyPI with a
     # project name different than the module name.
-    # PROJECT_NAME = vcpkg_json["name"]
-    PROJECT_NAME = 'example-python-extension-cpp' 
+    PROJECT_NAME = vcpkg_json["name"]
 
 # scikit-build will take care of puting our compiled C++ library together with
 # our python package so it can access it. The name of the python package will
@@ -75,13 +88,9 @@ if len(packages) > 1:
         )
 
 setup(
-    # Python package information, can be edited
-    name=PROJECT_NAME,
-    version=PROJECT_VERSION_STRING,
-    description="A minimal C++ extension using pybind11 and vcpkg",
-    author="Andreu Gimenez",
-    license="MIT",
-    # Python package information is defined above
+    # Package metadata, comment out if it is provided in `pyproject.toml`.
+    # name=PROJECT_NAME, # Use the name defined in `vcpkg.json`
+    version=PROJECT_VERSION_STRING, # Set version from `vcpkg.json`
     packages=packages,
     package_dir={"": python_packages_root},
     cmake_install_dir=python_packages_root + "/" + packages[0],
@@ -94,13 +103,4 @@ setup(
         "-DBUILD_PYTHON_API=ON",
         "-DBUILD_TESTS=OFF",
         ],
-    # Extra setuptools keywords:
-    # https://setuptools.pypa.io/en/latest/userguide/keywords.html
-    python_requires=">=3.7",
-    # When adding `[test]` to your `pip install` command you can install the
-    # extra dependencies associated with testing. Example `pip install .[test]`
-    # https://setuptools.pypa.io/en/latest/userguide/dependency_management.html#optional-dependencies
-    extras_require={"test": ["pytest"]},
-    # Necessary to publish to PyPi with the README.md as the long description
-    long_description_content_type="text/markdown",
 )

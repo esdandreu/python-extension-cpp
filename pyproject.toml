@@ -7,8 +7,31 @@ requires = [
     "pybind11",
     "GitPython",
 ]
-
 build-backend = "setuptools.build_meta"
+
+[project]
+# https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
+# https://peps.python.org/pep-0621/
+name = "example-python-extension-cpp"
+authors = [
+    { name = "Andreu Gimenez", email = "esdandreu@gmail.com" },
+]
+description = "A minimal C++ extension using pybind11 and vcpkg"
+readme = "README.md"
+license = {text = "BSD 3-Clause License"}
+requires-python = ">=3.7"
+keywords = ["example", "vcpkg", "pybind11", "scikit-build", "cpp"]
+dynamic = ["version"] 
+
+[project.urls]
+homepage = "https://github.com/esdandreu/python-extension-cpp"
+repository = "https://github.com/esdandreu/python-extension-cpp"
+
+[project.optional-dependencies]
+# When adding `[test]` to your `pip install` command you can install the extra
+# dependencies associated with testing. Example `pip install .[test]`
+# https://setuptools.pypa.io/en/latest/userguide/dependency_management.html#optional-dependencies
+test = ["pytest"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
