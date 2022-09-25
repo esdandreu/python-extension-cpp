@@ -153,7 +153,7 @@ that takes care of the installation. The rest of dependencies will be installed
 automatically.
 
 ```
-pip install scikit-build
+pip install scikit-build git
 ```
 
 Install the repository. By adding `[test]` to our install command we can
@@ -179,7 +179,14 @@ pytest
 
 ## CI/CD
 
-That workflow is activated when pushing a version tag to the repository:
+This template contains a continuous integration workflow that builds and tests
+the C++ library and the python extension
+[test.yml](.github/workflows/test.yml).
+
+It also contains a continuous deployment workflow that builds wheels and source
+distributions for the python extension, then creates a github release with it
+and uploads it to [PyPI](https://pypi.org/). That workflow is activated when
+pushing a version tag to the repository:
 ```
 git tag -a v0.0.1 -m "First release"
 git push origin --tags
