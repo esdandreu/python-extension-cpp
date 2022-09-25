@@ -181,6 +181,6 @@ pytest
 
 That workflow is activated when pushing a version tag to the repository:
 ```
-git tag v0.0.1
+git tag -a v0.0.1 -m "First release"
 git push origin --tags
 ```

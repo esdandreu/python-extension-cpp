@@ -3,9 +3,9 @@ name: Build and test
 on: 
   workflow_dispatch:
   # Uncomment to build when pushing to main
-  push:
-    branches:
-      - "main"
+  # push:
+  #   branches:
+  #     - "main"
 
 jobs:
   cpp:
@@ -54,6 +54,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, ubuntu-18.04, macos-latest, windows-latest]
+        python-version: ["3.7"]
 
     steps:
       - uses: actions/checkout@v3
@@ -63,10 +64,10 @@ jobs:
       - name: Restore artifacts, or setup vcpkg for building artifacts
         uses: lukka/run-vcpkg@v10.1
       
-      - name: Setup Python
-        uses: actions/setup-python@v2
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: ${{ matrix.python-version }}
 
       - name: Pre install vcpkg
         run: |
