@@ -15,7 +15,7 @@ jobs:
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Clone vcpkg
         run: git submodule update --init --recursive ./vcpkg
@@ -40,7 +40,19 @@ jobs:
           name: python-wheels
           path: ./wheelhouse/*.whl
   
-  # TODO build python sdist
+  build_sdist:
+    name: Build python sdist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: python3 setup.py sdist
+
+      - name: Upload python sdist
+        uses: actions/upload-artifact@v2
+        with:
+          name: python-sdist
+          path: ./dist/*
 
   # TODO build C++ library
     
@@ -49,7 +61,7 @@ jobs:
     needs: build_wheels
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Download python wheels
         uses: actions/download-artifact@v3
@@ -61,3 +73,29 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ./wheelhouse/*
+  
+  pypi_publish:
+    name: Publish to PyPI
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download python wheels
+        uses: actions/download-artifact@v3
+        with:
+          name: python-wheels
+          path: ./dist/
+
+      - name: Download python sdist
+        uses: actions/download-artifact@v3
+        with:
+          name: python-sdist
+          path: ./dist/
+
+      # TODO check
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          verbose: true
+          password: ${{ secrets.PYPI_TOKEN }}

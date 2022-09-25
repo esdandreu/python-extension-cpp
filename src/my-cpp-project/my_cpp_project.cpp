@@ -1,4 +1,4 @@
-#include "myproject.hpp"
+#include "my_cpp_project.hpp"
 
 int add(int i, int j) {
     return i + j;

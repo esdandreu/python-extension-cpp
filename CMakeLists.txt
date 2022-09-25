@@ -49,7 +49,7 @@ project(${PROJECT_NAME} VERSION ${VERSION_STRING})
 find_package(FFTW3 CONFIG REQUIRED)
 
 add_library(${PROJECT_NAME} STATIC 
-    src/${PROJECT_NAME}/myproject.cpp
+    src/${PROJECT_NAME}/my_cpp_project.cpp
 )
 
 target_include_directories(${PROJECT_NAME} 
@@ -81,7 +81,7 @@ if(BUILD_TESTS)
     # A possible extension here is to add all `.cpp` files under the `tests`
     # folder.
     add_executable(${PROJECT_TESTS_NAME} 
-        tests/test_myproject.cpp
+        tests/test_my_cpp_project.cpp
     )
 
     target_link_libraries(${PROJECT_TESTS_NAME} 

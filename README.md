@@ -15,16 +15,11 @@ A template for a standalone C++ library with dependencies managed by
 
 If you want to distribute your extension using `pip` or `conda` and you mind
 that your users take a long time to install it, then it might be better to
-build some binaries instead of optimizing the build process. This template
-might still be useful for you as it has a
+distribute some built binaries instead of optimizing the build process. This
+template might still be useful for you as it has a
 [release](.github/workflows/release.yml) workflow for building python wheels
-with [cibuildwheel](https://github.com/pypa/cibuildwheel).
-
-That workflow is activated when pushing a version tag to the repository:
-```
-git tag v0.0.1
-git push origin --tags
-```
+with [cibuildwheel](https://github.com/pypa/cibuildwheel) and distributing them
+to [PyPI](https://pypi.org/).
 
 ## Example usage
 
@@ -52,10 +47,15 @@ from source dependencies that might as well be installed on the system. But
 this allows a fast development environment where adding or removing C++
 dependencies should be easy.
 
+Alternatively, you can install the package from the binaries distributed in [PyPI](https://pypi.org/project/example-python-extension-cpp/).
+```
+pip install example-python-extension-cpp
+```
+
 ### Test that the C++ code is working in the Python package
 Our simple project contains a `add` function that adds two numbers together.
 ```
-python -c "import pyproject; print(pyproject.add(1, 2))"
+python -c "import my_python_api; print(my_python_api.add(1, 2))"
 ```
 
 It also makes use of the C++ library
@@ -63,7 +63,7 @@ It also makes use of the C++ library
 in order to perform a Fast Fourier Transform over a generated signal, printing
 its results.
 ```
-python -c "import pyproject; pyproject.hello_fft()"
+python -c "import my_python_api; my_python_api.hello_fft()"
 ```
 
 ## Setup
@@ -175,4 +175,12 @@ ctest --test-dir build
 
 ```
 pytest
+```
+
+## CI/CD
+
+That workflow is activated when pushing a version tag to the repository:
+```
+git tag v0.0.1
+git push origin --tags
 ```
