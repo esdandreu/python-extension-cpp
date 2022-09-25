@@ -67,8 +67,6 @@ with open(PROJECT_SOURCE_DIR / "vcpkg.json") as f:
     vcpkg_json = json.load(f)
     # Required
     PROJECT_VERSION_STRING = vcpkg_json["version-string"]
-    # A different name can be specified here in order to upload to PyPI with a
-    # project name different than the module name.
     PROJECT_NAME = vcpkg_json["name"]
 
 # scikit-build will take care of puting our compiled C++ library together with
