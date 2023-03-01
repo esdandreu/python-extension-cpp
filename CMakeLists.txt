@@ -159,23 +159,4 @@ if(DEFINED SKBUILD)
         PRE_EXCLUDE_REGEXES ".*"
         DESTINATION .
     )
-
-    # The extension module must load the hello library as a dependency when the
-    # extension module is loaded. The easiest way to locate the hello library
-    # is via RPATH. Absolute RPATHs are possible, but they make the resulting
-    # binaries not redistributable to other Python installations (conda is
-    # broke, wheel reuse is broke, and more!).
-    #
-    # Placing the hello library in the package and using relative RPATHs that
-    # doesn't point outside of the package means that the built package is
-    # relocatable. This allows for safe binary redistribution.
-    # if(APPLE)
-    # set_target_properties(${PROJECT_PYTHON_API_NAME}
-    # PROPERTIES INSTALL_RPATH "@loader_path/${CMAKE_INSTALL_LIBDIR}"
-    # )
-    # else()
-    # set_target_properties(${PROJECT_PYTHON_API_NAME}
-    # PROPERTIES INSTALL_RPATH "$ORIGIN/${CMAKE_INSTALL_LIBDIR}"
-    # )
-    # endif()
 endif()
