@@ -142,22 +142,23 @@ if(DEFINED SKBUILD)
         VERSION_INFO=${PROJECT_VERSION}
     )
 
-    # Extract the `vcpkg` dependencies from `vckpkg.json` so we can install
-    # them together with the python API.
-    # string(JSON VCPKG_DEPENDENCIES_LENGTH LENGTH ${vcpkg_json} "dependencies")
-    # math(EXPR _LIMIT "${VCPKG_DEPENDENCIES_LENGTH} - 1")
-    # foreach(_IDX RANGE 0 ${_LIMIT})
-    # string(JSON VCPKG_DEPENDENCY GET ${vcpkg_json} "dependencies" ${_IDX})
-    # list(APPEND VCPKG_DEPENDENCIES ${VCPKG_DEPENDENCY})
-    # endforeach()
+    # List `vcpkg` dependencies from VCPKG_INSTALLED_DIR so we can install them
+    # together with the python API.
+    file(GLOB VCPKG_DEPENDENCIES
+        RELATIVE "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin/"
+        "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin/*"
+    )
 
     # Install the `vcpkg` dependencies that are used in our ${PROJECT_NAME}
-    # library in the same DESTINATION as the python API. Google Test and
-    # `pybind11` are `vcpkg` dependencies but they are not used at runtime,
-    # only when building and therefore they won't be installed. Note that it
+    # library in the same DESTINATION as the python API. Note that it
     # only supports collecting the runtime dependencies for Windows, Linux and
     # macOS platforms.
-    install(TARGETS ${PROJECT_PYTHON_API_NAME} DESTINATION .)
+    install(TARGETS ${PROJECT_PYTHON_API_NAME}
+        RUNTIME_DEPENDENCIES
+        PRE_INCLUDE_REGEXES ${VCPKG_DEPENDENCIES}
+        PRE_EXCLUDE_REGEXES ".*"
+        DESTINATION .
+    )
 
     # The extension module must load the hello library as a dependency when the
     # extension module is loaded. The easiest way to locate the hello library
@@ -168,13 +169,13 @@ if(DEFINED SKBUILD)
     # Placing the hello library in the package and using relative RPATHs that
     # doesn't point outside of the package means that the built package is
     # relocatable. This allows for safe binary redistribution.
-    if(APPLE)
-        set_target_properties(${PROJECT_PYTHON_API_NAME}
-            PROPERTIES INSTALL_RPATH "@loader_path/${CMAKE_INSTALL_LIBDIR}"
-        )
-    else()
-        set_target_properties(${PROJECT_PYTHON_API_NAME}
-            PROPERTIES INSTALL_RPATH "$ORIGIN/${CMAKE_INSTALL_LIBDIR}"
-        )
-    endif()
+    # if(APPLE)
+    # set_target_properties(${PROJECT_PYTHON_API_NAME}
+    # PROPERTIES INSTALL_RPATH "@loader_path/${CMAKE_INSTALL_LIBDIR}"
+    # )
+    # else()
+    # set_target_properties(${PROJECT_PYTHON_API_NAME}
+    # PROPERTIES INSTALL_RPATH "$ORIGIN/${CMAKE_INSTALL_LIBDIR}"
+    # )
+    # endif()
 endif()
