@@ -18,11 +18,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Clone vcpkg
-        run: git submodule update --init --recursive ./vcpkg
-        
       - name: Restore artifacts, or setup vcpkg for building artifacts
-        uses: lukka/run-vcpkg@v10.1
+        uses: lukka/run-vcpkg@v10
+        with:
+          vcpkgGitCommitId: "a7b6122f6b6504d16d96117336a0562693579933"
+          runVcpkgInstall: true
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.3.1
@@ -31,9 +31,6 @@ jobs:
           CIBW_ARCHS_LINUX: "x86_64"
           # Skip musllinux builds
           CIBW_SKIP: "*-musllinux_*"
-          # Pre install vcpkg (needed for macOS)
-          CIBW_BEFORE_BUILD_MACOS: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh; ${{ github.workspace }}/vcpkg/vcpkg install
-          CIBW_BEFORE_BUILD_WINDOWS: ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.bat; ${{ github.workspace }}/vcpkg/vcpkg install
 
       - name: Upload python wheels
         uses: actions/upload-artifact@v2
@@ -68,8 +65,6 @@ jobs:
           name: python-sdist
           path: ./dist/*
 
-  # TODO build and distribute C++ library
-    
   release:
     name: Make a Release
     needs: build_wheels
