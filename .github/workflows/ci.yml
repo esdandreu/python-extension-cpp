@@ -1,6 +1,6 @@
 name: CI
 
-on: 
+on:
   workflow_dispatch:
   # Uncomment to build when pushing to main
   # push:
@@ -31,16 +31,18 @@ jobs:
           submodules: true
 
       - name: Restore artifacts, or setup vcpkg for building artifacts
-        uses: lukka/run-vcpkg@v10.1
+        uses: lukka/run-vcpkg@v10
+        with:
+          vcpkgGitCommitId: "a7b6122f6b6504d16d96117336a0562693579933"
 
       - name: Create a build directory
         run: mkdir build
 
       - name: Configure cmake
-        run: > 
+        run: >
           cmake -B build -S . 
           -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
-      
+
       - name: Build with cmake
         run: cmake --build build --config Release
 
@@ -63,7 +65,7 @@ jobs:
 
       - name: Restore artifacts, or setup vcpkg for building artifacts
         uses: lukka/run-vcpkg@v10.1
-      
+
       - name: Setup Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -74,7 +76,7 @@ jobs:
           ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh 
           ${{ github.workspace }}/vcpkg/vcpkg install
         if: ${{ matrix.os == 'macos-latest' }}
-        
+
       - name: Install scikit-build
         run: pip install scikit-build
 
