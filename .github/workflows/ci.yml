@@ -6,8 +6,6 @@ on:
   # push:
   #   branches:
   #     - "main"
-env:
-  VCPKG_GIT_COMMIT_ID: a7b6122f6b6504d16d96117336a0562693579933
 
 jobs:
   cpp:
@@ -35,7 +33,7 @@ jobs:
       - name: Restore artifacts, or setup vcpkg for building artifacts
         uses: lukka/run-vcpkg@v10
         with:
-          vcpkgGitCommitId: "$VCPKG_GIT_COMMIT_ID"
+          vcpkgGitCommitId: "a7b6122f6b6504d16d96117336a0562693579933"
 
       - name: Create a build directory
         run: mkdir build
@@ -68,18 +66,12 @@ jobs:
       - name: Restore artifacts, or setup vcpkg for building artifacts
         uses: lukka/run-vcpkg@v10
         with:
-          vcpkgGitCommitId: "$VCPKG_GIT_COMMIT_ID"
+          vcpkgGitCommitId: "a7b6122f6b6504d16d96117336a0562693579933"
 
       - name: Setup Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Pre install vcpkg
-        run: |
-          ${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh 
-          ${{ github.workspace }}/vcpkg/vcpkg install
-        if: ${{ matrix.os == 'macos-latest' }}
 
       - name: Install scikit-build
         run: pip install scikit-build
