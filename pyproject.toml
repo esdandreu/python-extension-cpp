@@ -3,9 +3,9 @@ requires = [
     "setuptools>=42",
     "wheel",
     "scikit-build>=0.13",
+    "cmake",
     "ninja",
     "pybind11",
-    "GitPython",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -13,15 +13,13 @@ build-backend = "setuptools.build_meta"
 # https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
 # https://peps.python.org/pep-0621/
 name = "example-python-extension-cpp"
-authors = [
-    { name = "Andreu Gimenez", email = "esdandreu@gmail.com" },
-]
+authors = [{ name = "Andreu Gimenez", email = "esdandreu@gmail.com" }]
 description = "A minimal C++ extension using pybind11 and vcpkg"
 readme = "README.md"
-license = {text = "BSD 3-Clause License"}
+license = { text = "BSD 3-Clause License" }
 requires-python = ">=3.7"
 keywords = ["example", "vcpkg", "pybind11", "scikit-build", "cpp"]
-dynamic = ["version"] 
+dynamic = ["version"]
 
 [project.urls]
 homepage = "https://github.com/esdandreu/python-extension-cpp"
@@ -35,6 +33,4 @@ test = ["pytest"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-testpaths = [
-    "tests",
-]
+testpaths = ["tests"]

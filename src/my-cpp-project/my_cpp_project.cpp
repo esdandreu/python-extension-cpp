@@ -1,4 +1,5 @@
 #include "my_cpp_project.hpp"
+#include <fftw3.h>
 
 int add(int i, int j) {
     return i + j;
@@ -27,7 +28,8 @@ void hello_fft() {
 
     // Print the result
     for (i = 0; i < NUM_POINTS; ++i) {
-        double mag = sqrt(result[i][REAL] * result[i][REAL]
+        double mag = sqrt(
+            result[i][REAL] * result[i][REAL]
             + result[i][IMAG] * result[i][IMAG]);
 
         printf("%g\n", mag);

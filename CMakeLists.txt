@@ -1,42 +1,52 @@
 # Installing RUNTIME_DEPENDENCIES requires at least CMake version 3.21
 cmake_minimum_required(VERSION 3.21)
 
-# Compliler flags
-set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall --std=c++17 -O3 -fPIC" )
-set( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wall -O3 -fPIC" )
+set(CMAKE_CXX_STANDARD 17)
 
-# Set CMake to use `vcpkg` to install dependencies. I avoids the need of
-# passing it as an argument to `cmake`.
-# https://github.com/microsoft/vcpkg/blob/master/docs/users/integration.md#using-an-environment-variable-instead-of-a-command-line-option
-if (NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+# vcpkg dependency manager
+option(CMAKE_FETCH_VCPKG "Whether to fetch vcpkg if VCPKG_ROOT is not set." ON)
+
+if(DEFINED CMAKE_TOOLCHAIN_FILE) # Print toolchain information
+    message(STATUS "Using toolchain: ${CMAKE_TOOLCHAIN_FILE}")
+elseif(NOT DEFINED CMAKE_PROJECT_NAME)
     if(DEFINED ENV{VCPKG_ROOT})
-        set(CMAKE_TOOLCHAIN_FILE 
-            "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING ""
+        message(STATUS "Using vcpkg installed in $ENV{VCPKG_ROOT}")
+        set(CMAKE_TOOLCHAIN_FILE
+            "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+            CACHE FILEPATH ""
         )
-    elseif(EXISTS "${CMAKE_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
-        set(CMAKE_TOOLCHAIN_FILE 
-            "${CMAKE_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake"
-            CACHE STRING ""
+    elseif(CMAKE_FETCH_VCPKG)
+        message(STATUS "Fetching vcpkg")
+        include(FetchContent)
+        FetchContent_Declare(vcpkg
+            GIT_REPOSITORY https://github.com/microsoft/vcpkg/
+            GIT_TAG 2022.09.27
+        )
+        FetchContent_MakeAvailable(vcpkg)
+        set(CMAKE_TOOLCHAIN_FILE
+            "${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake"
+            CACHE FILEPATH ""
+        )
+        message(STATUS "Fetching vcpkg -- done")
+    else()
+        message(STATUS
+            "Not using `vcpkg`. Consider setting CMAKE_FETCH_VCPKG=ON"
         )
     endif()
 endif()
-if (DEFINED CMAKE_TOOLCHAIN_FILE) # Print useful information
-    message(STATUS "Using toolchain: ${CMAKE_TOOLCHAIN_FILE}")
-else()
-    message(STATUS "\
-Not using `vcpkg`. Consider adding it to manage \
-dependencies https://github.com/microsoft/vcpkg.git"
-    )
+
+option(BUILD_TESTS "Build tests" ON)
+
+if(BUILD_TESTS)
+    list(APPEND VCPKG_MANIFEST_FEATURES "tests")
 endif()
 
-# In order to avoid specifying package name and version in multiple files, we
-# will use `vcpkg.json` in the repository root as reference and extract the
-# apropiate variables from there.
+# Avoid specifying package name and version in multiple files by extracting
+# them from `vcpkg.json` in the repository root.
 file(READ ${CMAKE_SOURCE_DIR}/vcpkg.json vcpkg_json)
 string(JSON PROJECT_NAME GET ${vcpkg_json} "name")
-string(JSON VERSION_STRING GET ${vcpkg_json} "version-string")
-
-project(${PROJECT_NAME} VERSION ${VERSION_STRING})
+string(JSON VERSION_STRING GET ${vcpkg_json} "version-semver")
+project(${PROJECT_NAME} VERSION ${VERSION_STRING} LANGUAGES CXX)
 
 # It is recommended to split this file into multiple files and use
 # `add_submodule` if it starts to grow too large.
@@ -48,24 +58,22 @@ project(${PROJECT_NAME} VERSION ${VERSION_STRING})
 # wrapper
 find_package(FFTW3 CONFIG REQUIRED)
 
-add_library(${PROJECT_NAME} STATIC 
+add_library(${PROJECT_NAME} STATIC
     src/${PROJECT_NAME}/my_cpp_project.cpp
 )
 
-target_include_directories(${PROJECT_NAME} 
+target_include_directories(${PROJECT_NAME}
     PUBLIC
-        src/${PROJECT_NAME}
+    src/${PROJECT_NAME}
 )
 
-target_link_libraries(${PROJECT_NAME} 
+target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        FFTW3::fftw3
+    FFTW3::fftw3
 )
 
 # ---------------------------- Build library tests ----------------------------
 # Recomended refactor into tests/CMakeLists.txt
-
-option(BUILD_TESTS "Build tests" ON)
 if(BUILD_TESTS)
     message(STATUS "Build tests")
     find_package(GTest CONFIG REQUIRED)
@@ -80,45 +88,36 @@ if(BUILD_TESTS)
 
     # A possible extension here is to add all `.cpp` files under the `tests`
     # folder.
-    add_executable(${PROJECT_TESTS_NAME} 
+    add_executable(${PROJECT_TESTS_NAME}
         tests/test_my_cpp_project.cpp
     )
 
-    target_link_libraries(${PROJECT_TESTS_NAME} 
+    target_link_libraries(${PROJECT_TESTS_NAME}
         PRIVATE
-            ${PROJECT_NAME}
-            GTest::gtest_main
+        ${PROJECT_NAME}
+        GTest::gtest_main
     )
 
     include(GoogleTest)
     gtest_discover_tests(${PROJECT_TESTS_NAME})
-
 endif()
 
 # ----------------------------- Build python api ------------------------------
 # Recomended refactor into src/python/CMakeLists.txt
 
 # Option for building the project Python API, `setup.py` defines this variable
-option(BUILD_PYTHON_API "Build Python API" OFF)
-if(BUILD_PYTHON_API)
+if(DEFINED SKBUILD)
     message(STATUS "Build Python API")
 
     message(STATUS "Python executable: ${PYTHON_EXECUTABLE}")
 
-    if(SKBUILD)
-        # Scikit-Build does not add your site-packages to the search path
-        # automatically, so we need to add the pybind11 specific directory
-        # here.
-        execute_process(
-            COMMAND "${PYTHON_EXECUTABLE}" -c
-                    "import pybind11; print(pybind11.get_cmake_dir())"
-            OUTPUT_VARIABLE _tmp_dir
-            OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ECHO STDOUT
-        )
-        list(APPEND CMAKE_PREFIX_PATH "${_tmp_dir}")
-    endif()
+    # prevent an unused variable warning
+    set(ignoreMe "${SKBUILD}")
 
-    # Now we can find pybind11
+    # call pybind11-config to obtain the root of the cmake package
+    execute_process(COMMAND ${PYTHON_EXECUTABLE} -m pybind11 --cmakedir
+        OUTPUT_VARIABLE pybind11_ROOT_RAW)
+    string(STRIP ${pybind11_ROOT_RAW} pybind11_ROOT)
     find_package(pybind11 CONFIG REQUIRED)
 
     # Take into account that this name should be consistent with the contents
@@ -128,29 +127,29 @@ if(BUILD_PYTHON_API)
     set(PROJECT_PYTHON_API_NAME _python_api)
 
     # This function behaves very much like CMake’s builtin `add_library`
-    pybind11_add_module(${PROJECT_PYTHON_API_NAME} 
-        MODULE 
-            src/python/api.cpp
+    pybind11_add_module(${PROJECT_PYTHON_API_NAME}
+        MODULE
+        src/python/api.cpp
     )
 
-    target_link_libraries(${PROJECT_PYTHON_API_NAME} 
+    target_link_libraries(${PROJECT_PYTHON_API_NAME}
         PRIVATE
-            ${PROJECT_NAME}
+        ${PROJECT_NAME}
     )
 
-    target_compile_definitions(${PROJECT_PYTHON_API_NAME} 
-        PRIVATE 
-            VERSION_INFO=${PROJECT_VERSION}
+    target_compile_definitions(${PROJECT_PYTHON_API_NAME}
+        PRIVATE
+        VERSION_INFO=${PROJECT_VERSION}
     )
 
     # Extract the `vcpkg` dependencies from `vckpkg.json` so we can install
     # them together with the python API.
-    string(JSON VCPKG_DEPENDENCIES_LENGTH LENGTH ${vcpkg_json} "dependencies")
-    math(EXPR _LIMIT "${VCPKG_DEPENDENCIES_LENGTH} - 1")
-    foreach(_IDX RANGE 0 ${_LIMIT})
-        string(JSON VCPKG_DEPENDENCY GET ${vcpkg_json} "dependencies" ${_IDX})
-        list(APPEND VCPKG_DEPENDENCIES ${VCPKG_DEPENDENCY})
-    endforeach()
+    # string(JSON VCPKG_DEPENDENCIES_LENGTH LENGTH ${vcpkg_json} "dependencies")
+    # math(EXPR _LIMIT "${VCPKG_DEPENDENCIES_LENGTH} - 1")
+    # foreach(_IDX RANGE 0 ${_LIMIT})
+    # string(JSON VCPKG_DEPENDENCY GET ${vcpkg_json} "dependencies" ${_IDX})
+    # list(APPEND VCPKG_DEPENDENCIES ${VCPKG_DEPENDENCY})
+    # endforeach()
 
     # Install the `vcpkg` dependencies that are used in our ${PROJECT_NAME}
     # library in the same DESTINATION as the python API. Google Test and
@@ -158,10 +157,24 @@ if(BUILD_PYTHON_API)
     # only when building and therefore they won't be installed. Note that it
     # only supports collecting the runtime dependencies for Windows, Linux and
     # macOS platforms.
-    install(TARGETS ${PROJECT_PYTHON_API_NAME}
-        RUNTIME_DEPENDENCIES 
-            PRE_INCLUDE_REGEXES ${VCPKG_DEPENDENCIES}
-            PRE_EXCLUDE_REGEXES ".*"
-        DESTINATION .
-    )
+    install(TARGETS ${PROJECT_PYTHON_API_NAME} DESTINATION .)
+
+    # The extension module must load the hello library as a dependency when the
+    # extension module is loaded. The easiest way to locate the hello library
+    # is via RPATH. Absolute RPATHs are possible, but they make the resulting
+    # binaries not redistributable to other Python installations (conda is
+    # broke, wheel reuse is broke, and more!).
+    #
+    # Placing the hello library in the package and using relative RPATHs that
+    # doesn't point outside of the package means that the built package is
+    # relocatable. This allows for safe binary redistribution.
+    if(APPLE)
+        set_target_properties(${PROJECT_PYTHON_API_NAME}
+            PROPERTIES INSTALL_RPATH "@loader_path/${CMAKE_INSTALL_LIBDIR}"
+        )
+    else()
+        set_target_properties(${PROJECT_PYTHON_API_NAME}
+            PROPERTIES INSTALL_RPATH "$ORIGIN/${CMAKE_INSTALL_LIBDIR}"
+        )
+    endif()
 endif()
