@@ -39,9 +39,7 @@ jobs:
         run: mkdir build
 
       - name: Configure cmake
-        run: >
-          cmake -B build -S . 
-          -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        run: cmake -B build
 
       - name: Build with cmake
         run: cmake --build build --config Release
