@@ -1,6 +1,6 @@
 {
   "name": "my-cpp-project",
-  "version-semver": "0.0.4",
+  "version-semver": "0.1.0",
   "description": "A minimal example library using pybind11 and vcpkg",
   "dependencies": ["fftw3"],
   "features": {
