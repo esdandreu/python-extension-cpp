@@ -6,6 +6,8 @@ on:
   # push:
   #   branches:
   #     - "main"
+env:
+  VCPKG_GIT_COMMIT_ID: a7b6122f6b6504d16d96117336a0562693579933
 
 jobs:
   cpp:
@@ -33,7 +35,7 @@ jobs:
       - name: Restore artifacts, or setup vcpkg for building artifacts
         uses: lukka/run-vcpkg@v10
         with:
-          vcpkgGitCommitId: "a7b6122f6b6504d16d96117336a0562693579933"
+          vcpkgGitCommitId: "$VCPKG_GIT_COMMIT_ID"
 
       - name: Create a build directory
         run: mkdir build
@@ -64,7 +66,9 @@ jobs:
           submodules: true
 
       - name: Restore artifacts, or setup vcpkg for building artifacts
-        uses: lukka/run-vcpkg@v10.1
+        uses: lukka/run-vcpkg@v10
+        with:
+          vcpkgGitCommitId: "$VCPKG_GIT_COMMIT_ID"
 
       - name: Setup Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
